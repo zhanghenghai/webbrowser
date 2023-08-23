@@ -1,0 +1,16 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 添加其他偏好设置项 -->
+    <CheckBoxPreference
+        android:key="show_notifications"
+        android:title="显示通知"
+        android:summary="启用后将显示通知"
+        android:defaultValue="true" />
+
+    <SwitchPreference
+        android:key="dark_mode"
+        android:title="夜间模式"
+        android:summary="启用后将切换到夜间模式"
+        android:defaultValue="false" />
+
+    <!-- 添加更多偏好设置项 -->
+</PreferenceScreen>

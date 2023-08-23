@@ -1,0 +1,56 @@
+<!-- custom_dialog_layout.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="320dp"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:background="@drawable/list_dialog"
+    android:layout_gravity="center_horizontal"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:text="自定义搜索"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="@color/black">
+    </TextView>
+
+    <EditText
+        android:id="@+id/custom_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#00FFFFFF"
+        android:hint="输入网址"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:minHeight="48dp"
+        android:textSize="16sp"
+        android:layout_marginStart="5dp"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/custom_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:textColor="@color/fabColor"
+            android:text="取消">
+        </TextView>
+        <TextView
+            android:id="@+id/custom_confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginStart="30dp"
+            android:textColor="@color/fabColor"
+            android:gravity="center"
+            android:text="确定">
+        </TextView>
+    </LinearLayout>
+</LinearLayout>

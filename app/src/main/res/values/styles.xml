@@ -1,0 +1,121 @@
+<resources>
+
+    <style name="AppThemes" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryDark">@color/black</item>
+        <item name="colorAccent">@color/black</item>
+    </style>
+
+    <!-- 设置Toolbar标题字体的颜色大小 -->
+    <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">18sp</item><!--toolbar标题字体大小-->
+        <item name="android:textColor">@color/black</item><!--toolbar标题字体颜色-->
+    </style>
+
+    <!--窗口的打开和关闭-->
+    <style name="default_animation" mce_bogus="1" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/create_zoomin</item>
+        <item name="android:activityOpenExitAnimation">@anim/create_zoomout</item>
+        <item name="android:activityCloseEnterAnimation">@anim/finish_zoomin</item>
+        <item name="android:activityCloseExitAnimation">@anim/finish_zoomout</item>
+    </style>
+
+    <style name="SplashActivityTheme" parent="android:Theme.Holo.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:windowBackground">@color/white</item>
+    </style>
+
+    <style name="statusBarColor" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <!--Android 5.x开始需要把颜色设置为指定的颜色，否则导航栏会呈现系统默认的浅灰色-->
+        <item name="android:statusBarColor">@color/black</item>
+    </style>
+
+    <style name="PreviewFullScreenTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:windowBackground">@color/black</item>
+    </style>
+
+    <style name="AppTheme.Splash" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <!--将顶部状态栏设置为透明，并将界面内容布局上边界上提至状态栏顶部-->
+        <item name="android:windowTranslucentStatus">true</item>
+        <!--如果有底部虚拟导航栏，则将底部虚拟导航栏设置为透明，并将界面内容布局下边界下沉至虚拟导航栏底部-->
+        <item name="android:windowTranslucentNavigation">true</item>
+        <!--给window窗口设置背景图-->
+        <item name="android:windowBackground">@color/black</item>
+    </style>
+
+    <style name="AppTheme">
+        <item name="colorPrimaryDark">@color/white</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="SplashTheme" parent="AppTheme">
+        <item name="android:colorBackground">@color/white</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowActionModeOverlay">false</item>
+        <item name="popupMenuStyle">@style/PopupMenuBgStyle</item>
+        <item name="dropdownListPreferredItemHeight">30dp</item>
+        <item name="textAppearanceSmallPopupMenu">@style/PopupMenuTextStyle</item>
+        <item name="textAppearanceLargePopupMenu">@style/PopupMenuTextStyle</item>
+    </style>
+
+    <style name="PopupMenuBgStyle" parent="@android:style/Widget.PopupMenu">
+        <item name="android:width">100dp</item>
+    </style>
+
+    <style name="PopupMenuDivier">
+        <item name="android:divider">@color/black</item>
+        <item name="android:dividerHeight">0.3dp</item>
+    </style>
+
+    <style name="PopupMenuTextStyle">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+
+    <style name="SCBSwitch" parent="Theme.AppCompat.Light">
+        <!-- active thumb & track color (30% transparency) -->
+        <item name="colorControlActivated">#46bdbf</item>
+
+        <!-- inactive thumb color -->
+        <item name="colorSwitchThumbNormal">#f1f1f1
+        </item>
+
+        <!-- inactive track color (30% transparency) -->
+        <item name="android:colorForeground">#42221f1f
+        </item>
+    </style>
+
+    <style name="TabItemText" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="custom_dialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:background">#00000000</item>
+        <item name="android:windowBackground">@color/Transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+    <style name="MyPopupMenuStyle" parent="@style/Widget.AppCompat.PopupMenu">
+        <item name="android:popupBackground">@drawable/my_popup_background</item>
+        <item name="android:textColor">#730F0F</item>
+    </style>
+
+
+    <style name="pop_add">
+        <item name="android:windowEnterAnimation">@anim/pop_add_show</item>
+        <item name="android:windowExitAnimation">@anim/pop_add_hide</item>
+    </style>
+
+</resources>

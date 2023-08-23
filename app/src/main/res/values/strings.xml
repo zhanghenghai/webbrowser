@@ -1,0 +1,81 @@
+<resources>
+    <string name="app_name">一小只</string>
+    <string name="dialog_select">关闭</string>
+    <string name="dialog_add">添加</string>
+    <string name="dialog_spy">无痕</string>
+    <string name="dialog_clear">清除</string>
+    <string name="dialog_title">页面选择</string>
+    <string name="clear_page">TODO</string>
+    <string name="home_refresh">刷新</string>
+    <string name="home_more">更多</string>
+    <string name="home_title">主页</string>
+    <string name="home_retreat">后退</string>
+    <string name="home_advance">前进</string>
+    <string name="home_index">首页</string>
+    <string name="search_certificate">搜索证件</string>
+    <string name="certificate_name">输入证件照名称</string>
+    <string name="BG_PATH_DEFAULT">image_matting/images/bg.jpg</string>
+
+    <style name="dialogTheme" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:background">#00000000</item>
+        <item name="android:windowBackground">#00000000</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+    <style name="dialogMoreTheme" parent="@android:style/Theme.Dialog">
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">false</item>
+        <item name="android:windowBackground">@color/black</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+    <string name="history">历史</string>
+    <string name="download">下载</string>
+
+    <string name="title_activity_main2">MainActivity2</string>
+    <string name="title_activity_collect_helper">CollectHelper</string>
+    <string name="book_delete">删除</string>
+    <string name="book_icon">网址图标</string>
+    <string name="home_book_add">加入书签</string>
+    <string name="home_code">网页源码</string>
+    <string name="more_right_dialog_title">标题</string>
+    <string name="more_right_dialog_url">链接</string>
+    <string name="more_right_yes">是否添加到首页</string>
+    <string name="more_right_dialog_cancel">取消</string>
+    <string name="more_right_dialog_confirm">确认</string>
+    <string name="more_right_dialog_image">TODO</string>
+    <string name="book_more">书签更多</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="histort_delete">清空历史</string>
+    <string name="history_icon">历史记录</string>
+    <string name="history_delete">删除历史</string>
+    <string name="title_activity_history">historyActivity</string>
+    <string name="title_activity_history2">HistoryActivity2</string>
+    <string name="title_activity_script">ScriptActivity</string>
+    <string name="title_activity_book">BookActivity</string>
+    <string name="title_activity_set">SetActivity</string>
+    <string name="title_activity_certificate">CertificateActivity</string>
+    <string name="title_activity_list">ListActivity</string>
+
+    <string name="add_certificate">添加证件</string>
+    <string name="certificate_title">证件标题</string>
+    <string name="ImgWidth">图片宽度</string>
+    <string name="ImgHeight">图片高度</string>
+    <string name="cancel">取消</string>
+    <string name="confirm">确定</string>
+    <string name="ratio">x</string>
+    <string name="px">px</string>
+    <string name="select_title">照片选择</string>
+    <string name="select_photo">选择图片</string>
+    <string name="select_img">TODO</string>
+    <string name="select_photograph">点击拍照</string>
+    <string name="title_activity_translate">TranslateActivity</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_download">DownloadActivity</string>
+</resources>

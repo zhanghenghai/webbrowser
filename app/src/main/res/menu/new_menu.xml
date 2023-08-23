@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/group1"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/title_group1"
+            android:enabled="false"
+            android:title="常用工具" />
+        <item
+            android:id="@+id/translate"
+            android:icon="@drawable/translate"
+            android:background="@color/Transparent"
+            android:title="翻译" />
+
+        <item
+            android:id="@+id/compass"
+            android:icon="@drawable/computer_line"
+            android:title="指南针" />
+    </group>
+    <group
+        android:id="@+id/group2"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/title_group2"
+            android:enabled="false"
+            android:title="图片工具" />
+        <item
+            android:id="@+id/portrait"
+            android:icon="@drawable/contacts_line"
+            android:title="证件生成" />
+        <item
+            android:id="@+id/colorPicker"
+            android:icon="@drawable/palette_line"
+            android:title="图片取色" />
+        <item
+            android:id="@+id/watermark"
+            android:icon="@drawable/drop_line"
+            android:title="图片水印" />
+        <item
+            android:id="@+id/black_and_white"
+            android:icon="@drawable/drop_line"
+            android:title="图片转黑白" />
+        <item
+            android:id="@+id/baseImage"
+            android:icon="@drawable/landscape_fill"
+            android:title="图片转Base4码" />
+    </group>
+    <group
+        android:id="@+id/group3"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/title_group3"
+            android:enabled="false"
+            android:title="制作工具" />
+        <item
+            android:id="@+id/timeScreen"
+            android:icon="@drawable/time_line"
+            android:title="时间屏幕" />
+        <item
+            android:id="@+id/subtitle"
+            android:icon="@drawable/closed_captioning_line"
+            android:title="滚动字幕" />
+        <item
+            android:id="@+id/qr"
+            android:icon="@drawable/qr_scan_2_line"
+            android:title="二维码生成" />
+    </group>
+</menu>
