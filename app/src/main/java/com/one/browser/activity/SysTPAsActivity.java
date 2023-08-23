@@ -29,7 +29,7 @@ import com.one.browser.widget.SelectView;
 
 import java.util.ArrayList;
 
-public class SysTpqsActivity extends AppCompatActivity {
+public class SysTPAsActivity extends AppCompatActivity {
 
     public final int REQ_CD_IMAGE = 101;
     private Intent image = new Intent(Intent.ACTION_GET_CONTENT);

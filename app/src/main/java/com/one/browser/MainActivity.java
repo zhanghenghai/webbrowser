@@ -6,6 +6,7 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
+
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -73,11 +74,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.android.material.internal.NavigationMenuView;
 import com.kymjs.rxvolley.RxVolley;
 import com.kymjs.rxvolley.client.HttpCallback;
+import com.one.browser.activity.SysBase64Activity;
 import com.one.browser.activity.SysBaseActivity;
 import com.one.browser.activity.SysClockActivity;
 import com.one.browser.activity.SysFanActivity;
 import com.one.browser.activity.SysSelectActivity;
-import com.one.browser.activity.SysTpqsActivity;
+import com.one.browser.activity.SysTPAsActivity;
 import com.one.browser.adapter.DialogPageAdapter;
 import com.one.browser.config.AppConfig;
 import com.one.browser.databinding.ActivityMainBinding;
@@ -359,7 +361,7 @@ public class MainActivity extends SysBaseActivity {
 
     }
 
-    private String getTopContent(){
+    private String getTopContent() {
         config = getSharedPreferences("Config", MODE_PRIVATE);
         topContent = config.getString("TopContent", "title");
         Log.i(TAG, "顶部配置文件 >>> " + topContent);
@@ -383,6 +385,7 @@ public class MainActivity extends SysBaseActivity {
         binding.navigationView2.setNavigationItemSelectedListener(item -> {
 
             switch (item.getItemId()) {
+                // 证件
                 case R.id.portrait: {
                     Intent intent = new Intent(MainActivity.this, SysSelectActivity.class);
                     intent.putExtra("title", "常用证件");
@@ -403,7 +406,12 @@ public class MainActivity extends SysBaseActivity {
                 }
                 // 图片取色
                 case R.id.colorPicker: {
-                    Intent intent = new Intent(MainActivity.this, SysTpqsActivity.class);
+                    Intent intent = new Intent(MainActivity.this, SysTPAsActivity.class);
+                    startActivity(intent);
+                }
+                // Base64
+                case R.id.baseImage: {
+                    Intent intent = new Intent(MainActivity.this, SysBase64Activity.class);
                     startActivity(intent);
                 }
             }

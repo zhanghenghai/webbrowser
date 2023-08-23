@@ -38,9 +38,6 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".activity.SysBase64Activity"
-            android:exported="false" />
-        <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
             android:exported="true"
@@ -146,11 +143,17 @@
             android:screenOrientation="landscape"
             android:theme="@style/Theme.one.NoActionBar" />
         <activity
-            android:name=".activity.SysTpqsActivity"
+            android:name=".activity.SysTPAsActivity"
             android:exported="false"
             android:label="图片取色"
             android:theme="@style/Theme.one.NoActionBar" />
-
+        <activity
+            android:name=".activity.SysBase64Activity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+            android:hardwareAccelerated="true"
+            android:label="Base64编码"
+            android:exported="false"
+            android:theme="@style/MaterialButtonTheme"/>
         <meta-data
             android:name="android.max_aspect"
             android:value="2.4" />

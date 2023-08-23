@@ -28,6 +28,9 @@ import com.one.browser.onClick.itemOnClick;
 import java.util.Objects;
 
 
+/**
+ * @author 18517
+ */
 public class SysFanActivity extends AppCompatActivity {
 
     private MaterialButton button;
