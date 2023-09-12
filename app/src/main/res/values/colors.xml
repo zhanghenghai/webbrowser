@@ -43,4 +43,14 @@
     <color name="editTextColor">#FF000000</color>
     <color name="fabColor">#FF5187F4</color>
     <color name="rippleColor">#FFBDBDBD</color>
+
+
+    <!--  material主题  -->
+    <color name="zts">#FF5187F4</color>
+    <color name="tabIndicatorColor">#FF5187F4</color>
+    <color name="tabTextColor">@color/black</color>
+    <color name="tabSelectedTextColor">#FF5187F4</color>
+    <color name="SelectedBackColor">#FF424242</color>
+
+
 </resources>

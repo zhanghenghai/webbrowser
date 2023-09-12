@@ -16,6 +16,15 @@ public class HttpUtil {
     /**
      * 翻译接口
      */
-    public static final String TRANSLATE = "http://192.168.8.2:8080/translate/api?";
+    public static final String TRANSLATE = "http://192.168.8.100:8080/api/translate?";
+
+    /**
+     * 成语接口
+     */
+     public static final String IDIOM = "http://192.168.8.100:8080/api/idiom?";
+
+
+     /**汉字词典*/
+     public static final String CHINESE = "http://192.168.8.100:8080/api/getSysChineseList?";
 
 }

@@ -162,12 +162,12 @@ public class HistoryDao {
     /**
      * 删除一条数据
      */
-    public void deleteHistory(String url) {
+    public void deleteHistory(String title) {
         SQLiteDatabase db = null;
         try {
             db = dbHelper.getWritableDatabase();
             db.beginTransaction();
-            db.delete(HistoryDbHelper.TABLE_NAME, "Title = ?", new String[]{url});
+            db.delete(HistoryDbHelper.TABLE_NAME, "Title = ?", new String[]{title});
             db.setTransactionSuccessful();
         } catch (Exception e) {
             e.printStackTrace();

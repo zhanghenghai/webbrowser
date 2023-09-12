@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
@@ -38,7 +39,11 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 
 import com.one.browser.R;
+import com.one.browser.activity.SysEwmActivity;
+import com.one.browser.activity.SysIdiomActivity;
 import com.one.browser.utils.FileUtil;
+import com.yalantis.ucrop.UCrop;
+import com.yalantis.ucrop.UCropActivity;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -325,5 +330,49 @@ public class itemOnClick {
     }
 
 
+    public static void LoadingDialogClose() {
+        itemOnClick.loadDialog.dismiss();
+    }
 
+    public static void Toast(Activity activity, String msg) {
+        new Thread(() -> {
+            activity.runOnUiThread(() -> {
+                Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
+            });
+        }).start();
+    }
+
+    public static String startUCrop(Context context, String sourceFilePath, float aspectRatioX, float aspectRatioY) {
+        Uri sourceUri = Uri.fromFile(new File(sourceFilePath));
+        File outDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        if (!outDir.exists()) {
+            outDir.mkdirs();
+        }
+        File outFile = new File(outDir, ".Crop.jpg");
+        //裁剪后图片的绝对路径
+        String cameraScalePath = outFile.getAbsolutePath();
+        Uri destinationUri = Uri.fromFile(outFile);
+        //初始化，第一个参数：需要裁剪的图片；第二个参数：裁剪后图片
+        UCrop uCrop = UCrop.of(sourceUri, destinationUri);
+        //初始化UCrop配置
+        UCrop.Options options = new UCrop.Options();
+        //设置裁剪图片可操作的手势
+        options.setAllowedGestures(UCropActivity.SCALE, UCropActivity.ROTATE, UCropActivity.ALL);
+        //是否隐藏底部容器，默认显示
+        options.setHideBottomControls(false);
+        //设置toolbar颜色
+        //options.setToolbarColor(ActivityCompat.getColor(activity, R.color.appbarColor));
+        //设置状态栏颜色
+        //options.setStatusBarColor(ActivityCompat.getColor(activity, R.color.appbarColor));
+        //是否能调整裁剪框
+        //options.setFreeStyleCropEnabled(true);
+        //UCrop配置
+        uCrop.withOptions(options);
+        //设置裁剪图片的宽高比，比如16：9
+        uCrop.withAspectRatio(aspectRatioX, aspectRatioY);
+        //uCrop.useSourceImageAspectRatio();
+        //跳转裁剪页面
+        uCrop.start((Activity) context);
+        return cameraScalePath;
+    }
 }

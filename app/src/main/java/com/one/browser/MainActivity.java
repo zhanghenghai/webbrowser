@@ -76,8 +76,11 @@ import com.kymjs.rxvolley.RxVolley;
 import com.kymjs.rxvolley.client.HttpCallback;
 import com.one.browser.activity.SysBase64Activity;
 import com.one.browser.activity.SysBaseActivity;
+import com.one.browser.activity.SysChineseActivity;
 import com.one.browser.activity.SysClockActivity;
+import com.one.browser.activity.SysEwmActivity;
 import com.one.browser.activity.SysFanActivity;
+import com.one.browser.activity.SysIdiomActivity;
 import com.one.browser.activity.SysSelectActivity;
 import com.one.browser.activity.SysTPAsActivity;
 import com.one.browser.adapter.DialogPageAdapter;
@@ -385,33 +388,49 @@ public class MainActivity extends SysBaseActivity {
         binding.navigationView2.setNavigationItemSelectedListener(item -> {
 
             switch (item.getItemId()) {
+                // 成语
+                case R.id.sys_idiom:{
+                    Intent intent = new Intent(MainActivity.this, SysIdiomActivity.class);
+                    startActivity(intent);
+                    break;
+                }
                 // 证件
-                case R.id.portrait: {
+                case R.id.sys_portrait: {
                     Intent intent = new Intent(MainActivity.this, SysSelectActivity.class);
                     intent.putExtra("title", "常用证件");
                     startActivity(intent);
                     break;
                 }
                 // 翻译
-                case R.id.translate: {
+                case R.id.sys_translate: {
                     Intent intent = new Intent(MainActivity.this, SysFanActivity.class);
                     startActivity(intent);
                     break;
                 }
                 // 时间屏幕
-                case R.id.timeScreen: {
+                case R.id.sys_timeScreen: {
                     Intent intent = new Intent(MainActivity.this, SysClockActivity.class);
                     startActivity(intent);
                     break;
                 }
                 // 图片取色
-                case R.id.colorPicker: {
+                case R.id.sys_colorPicker: {
                     Intent intent = new Intent(MainActivity.this, SysTPAsActivity.class);
                     startActivity(intent);
                 }
                 // Base64
-                case R.id.baseImage: {
+                case R.id.sys_baseImage: {
                     Intent intent = new Intent(MainActivity.this, SysBase64Activity.class);
+                    startActivity(intent);
+                }
+                // 中文词典
+                case R.id.sys_chinese: {
+                    Intent intent = new Intent(MainActivity.this, SysChineseActivity.class);
+                    startActivity(intent);
+                }
+                // 二维码生成
+                case R.id.sys_qr:{
+                    Intent intent = new Intent(MainActivity.this, SysEwmActivity.class);
                     startActivity(intent);
                 }
             }
@@ -1347,7 +1366,7 @@ public class MainActivity extends SysBaseActivity {
                 // 保存历史记录
                 @SuppressLint("SimpleDateFormat") SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String time = sDateFormat.format(new Date());
-                String ti = "2023-07-21 12:12:12";
+                String ti = "2023-09-10 12:12:12";
                 History history = new History(null, view.getTitle().trim(), view.getUrl(), time);
                 historyDao.insertDate(history);
             }

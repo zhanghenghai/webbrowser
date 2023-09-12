@@ -45,10 +45,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
          * 长按事件
          *
          * @param view           视图
-         * @param SgroupPosition 网址
-         * @param itemPosition   网址
+         * @param groupPosition  分组位置
+         * @param itemPosition   组内项目位置
          */
-        void onItemLongClick(View view, int SgroupPosition, int itemPosition);
+        void onItemLongClick(View view,int position, int newPosition,int groupPosition, int itemPosition);
 
     }
 
@@ -88,11 +88,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     int[] positions = getPositionInGroup(position);
                     int groupPosition = positions[0];
                     int itemPosition = positions[1];
-                    Log.i("TAG", "groupPosition : " + groupPosition);
+                    Log.i("TAG", "第 >>>  : " + groupPosition + " <<< 组");
                     Log.i("TAG", "itemPosition : " + itemPosition);
                     if (groupPosition != -1 && itemPosition != -1) {
+                        int newPosition = position - groupPosition - 1;
                         Log.i("TAG", " groupPosition >>> " + groupPosition + " <<< itemPosition >>> " + itemPosition);
-                        itemClickListener.onItemLongClick(view, groupPosition, itemPosition);
+                        itemClickListener.onItemLongClick(view,position,newPosition,groupPosition, itemPosition);
                     }
                     return true;
                 }

@@ -1,68 +1,77 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group
-        android:id="@+id/group1"
+        android:id="@+id/sys_one"
         android:checkableBehavior="none">
         <item
-            android:id="@+id/title_group1"
+            android:id="@+id/sys_common"
             android:enabled="false"
             android:title="常用工具" />
         <item
-            android:id="@+id/translate"
+            android:id="@+id/sys_translate"
             android:icon="@drawable/translate"
             android:background="@color/Transparent"
             android:title="翻译" />
-
         <item
-            android:id="@+id/compass"
+            android:id="@+id/sys_idiom"
+            android:icon="@drawable/font_color"
+            android:background="@color/Transparent"
+            android:title="成语查询" />
+        <item
+            android:id="@+id/sys_chinese"
+            android:icon="@drawable/book_line"
+            android:background="@color/Transparent"
+            android:title="汉字词典" />
+        <item
+            android:id="@+id/sys_compass"
             android:icon="@drawable/computer_line"
             android:title="指南针" />
     </group>
     <group
-        android:id="@+id/group2"
+        android:id="@+id/sys_two"
         android:checkableBehavior="none">
         <item
-            android:id="@+id/title_group2"
+            android:id="@+id/sys_image"
             android:enabled="false"
             android:title="图片工具" />
         <item
-            android:id="@+id/portrait"
+            android:id="@+id/sys_portrait"
             android:icon="@drawable/contacts_line"
             android:title="证件生成" />
         <item
-            android:id="@+id/colorPicker"
+            android:id="@+id/sys_colorPicker"
             android:icon="@drawable/palette_line"
             android:title="图片取色" />
         <item
-            android:id="@+id/watermark"
+            android:id="@+id/sys_watermark"
             android:icon="@drawable/drop_line"
             android:title="图片水印" />
         <item
-            android:id="@+id/black_and_white"
+            android:id="@+id/sys_black_and_white"
             android:icon="@drawable/drop_line"
             android:title="图片转黑白" />
         <item
-            android:id="@+id/baseImage"
+            android:id="@+id/sys_baseImage"
             android:icon="@drawable/landscape_fill"
             android:title="图片转Base4码" />
     </group>
     <group
-        android:id="@+id/group3"
+        android:id="@+id/sys_there"
         android:checkableBehavior="none">
         <item
-            android:id="@+id/title_group3"
+            android:id="@+id/sys_make"
             android:enabled="false"
             android:title="制作工具" />
         <item
-            android:id="@+id/timeScreen"
+            android:id="@+id/sys_timeScreen"
             android:icon="@drawable/time_line"
             android:title="时间屏幕" />
         <item
-            android:id="@+id/subtitle"
+            android:id="@+id/sys_subtitle"
             android:icon="@drawable/closed_captioning_line"
             android:title="滚动字幕" />
         <item
-            android:id="@+id/qr"
+            android:id="@+id/sys_qr"
             android:icon="@drawable/qr_scan_2_line"
             android:title="二维码生成" />
     </group>

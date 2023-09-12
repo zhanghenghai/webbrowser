@@ -6,6 +6,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 
+/**
+ * @author 18517
+ */
 public class SelectView extends androidx.appcompat.widget.AppCompatImageView
 {
  private Context mct;
@@ -14,16 +17,16 @@ public class SelectView extends androidx.appcompat.widget.AppCompatImageView
  private boolean FirstCr=true;
  //线条的位置和间隔
  private float csx=0,csy=0,jg=1.5f;
- //记录初始高宽
+ /**记录初始高宽*/
  private float h,w;
- //默认构造函数
+ /**默认构造函数*/
  public SelectView(Context context)
  {
   super(context);
   mct=context;
   mPaint=new Paint();
  }
- //该构造方法在静态引入XML文件中是必须的
+ /**该构造方法在静态引入XML文件中是必须的*/
  public SelectView(Context context, AttributeSet paramAttributeSet)
  {
   super(context,paramAttributeSet);

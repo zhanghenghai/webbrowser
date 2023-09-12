@@ -52,6 +52,20 @@ android {
 }
 
 dependencies {
+    // 颜色选择器
+    implementation 'com.github.QuadFlask:colorpicker:0.0.15'
+    // uCrop 是一个用于 Android 图片裁剪的开源库，它提供了强大且易于使用的裁剪功能，适用于各种图像处理需求。
+    implementation 'com.github.yalantis:ucrop:2.2.6'
+    // 开源的条形码和二维码处理库
+    implementation 'com.google.zxing:core:3.4.1'
+    // PermissionX 是一个用于简化 Android 运行时权限管理的库，可以帮助你更轻松地处理应用程序中的权限请求和授权
+    implementation 'com.guolindev.permissionx:permissionx:1.5.1'
+    //离散的滑动条
+    implementation 'org.adw.library:discrete-seekbar:1.0.1'
+    // RxJava
+    implementation "io.reactivex.rxjava3:rxjava:3.1.7"
+    // RxAndroid
+    implementation 'io.reactivex.rxjava3:rxandroid:3.0.2'
     // 开源 HTML 解析库
     implementation 'org.jsoup:jsoup:1.14.3'
     //内容推送

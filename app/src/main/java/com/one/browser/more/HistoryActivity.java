@@ -54,7 +54,6 @@ public class HistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
         dialogPopup = new PopupWindow(this);
-
         // 标题
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("历史记录");
@@ -99,9 +98,10 @@ public class HistoryActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onItemLongClick(View view, int SgroupPosition, int itemPosition) {
-                showPopDialog(view, SgroupPosition, itemPosition);
+            public void onItemLongClick(View view, int position, int newPosition, int groupPosition, int itemPosition) {
+                showPopDialog(view, position, newPosition, groupPosition, itemPosition);
             }
+
         });
     }
 
@@ -120,19 +120,44 @@ public class HistoryActivity extends AppCompatActivity {
         return groupedData;
     }
 
-    public void deleteItem(int groupPosition, int itemPosition) {
+    /**
+     * @param groupPosition 组位置
+     * @param itemPosition  子项位置
+     */
+    public void deleteItem(int position, int newPosition, int groupPosition, int itemPosition) {
+        Log.i("TAG", "数组总大小 >>>: " + dataList.size());
+        // 获取组数据
         GroupedHistoryData group = dataList.get(groupPosition);
         List<History> items = group.getHistoryList();
         if (itemPosition >= 0 && itemPosition < items.size()) {
             String title = items.get(itemPosition).getTitle();
+            Log.i("TAG", "当前数据 >>> : " + itemPosition);
             Log.i("TAG", "要删除的标题是 >>>: " + title);
             HistoryDao historyDao = new HistoryDao(this);
             historyDao.deleteHistory(title);
             // 先更新数据集，再通知适配器进行删除
+            Log.i("TAG", "数组总大小 >>>: " + historyList.size());
+            Log.i("TAG", "数组要删除的下标 >>>: " + newPosition);
+            Log.i("TAG", "适配器的下标 >>>: " + position);
 
-            items.remove(itemPosition);
-            historyAdapter.notifyItemRemoved(itemPosition);
-            historyAdapter.notifyItemRangeChanged(itemPosition, historyAdapter.getItemCount());
+            // 删除组内项
+            dataList.get(groupPosition).getHistoryList().remove(itemPosition);
+
+            // 计算全局位置
+            int globalPosition = calculateGlobalPosition(groupPosition, itemPosition);
+
+            // 通知适配器删除指定位置的项
+            historyAdapter.notifyItemRemoved(globalPosition);
+
+            // 通知适配器刷新删除项后的位置
+            historyAdapter.notifyItemRangeChanged(globalPosition, historyAdapter.getItemCount() - globalPosition);
+
+
+            //int adapterPosition = groupPosition + 1 + itemPosition; // 1 是组头的位置
+            //dataList.remove(newPosition);
+            //historyAdapter.notifyItemRemoved(position);
+            //historyAdapter.notifyItemRangeChanged(position, 1);
+
 
             // 如果组内没有数据了，则删除整个组
             if (items.isEmpty()) {
@@ -156,7 +181,7 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
 
-    private void showPopDialog(View view, int SgroupPosition, int itemPosition) {
+    private void showPopDialog(View view, int position, int newPosition, int groupPosition, int itemPosition) {
         // 获取长按事件的位置
         int[] location = new int[2];
         view.getLocationOnScreen(location);
@@ -189,12 +214,12 @@ public class HistoryActivity extends AppCompatActivity {
         // 点击删除操作
         LinearLayout historyDelete = dialogPopup.getContentView().findViewById(R.id.history_delete);
         historyDelete.setOnClickListener(view1 -> {
-            deleteItem(SgroupPosition, itemPosition);
+            deleteItem(position, newPosition, groupPosition, itemPosition);
         });
         // 点击复制链接按钮
         LinearLayout copeUrl = dialogPopup.getContentView().findViewById(R.id.cope_url);
         copeUrl.setOnClickListener(v -> {
-            String url = getUrl(SgroupPosition, itemPosition);
+            String url = getUrl(groupPosition, itemPosition);
             ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
             ClipData clip = ClipData.newPlainText("url", url);
             clipboard.setPrimaryClip(clip);
@@ -202,7 +227,7 @@ public class HistoryActivity extends AppCompatActivity {
         // 分享链接
         LinearLayout share = dialogPopup.getContentView().findViewById(R.id.share_url);
         share.setOnClickListener(v -> {
-            String url = getUrl(SgroupPosition, itemPosition);
+            String url = getUrl(groupPosition, itemPosition);
             Intent intent12 = new Intent(Intent.ACTION_SEND);
             intent12.setType("text/plain");
             intent12.putExtra(Intent.EXTRA_TEXT, url);
@@ -210,6 +235,21 @@ public class HistoryActivity extends AppCompatActivity {
         });
     }
 
+
+    // 计算全局位置
+    private int calculateGlobalPosition(int groupPosition, int itemPosition) {
+        int globalPosition = 0;
+
+        for (int i = 0; i < groupPosition; i++) {
+            globalPosition += 1;
+            globalPosition += dataList.get(i).getHistoryList().size();
+        }
+
+        globalPosition += itemPosition;
+        globalPosition += 1;
+
+        return globalPosition;
+    }
 
 
 }

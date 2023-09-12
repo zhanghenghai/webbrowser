@@ -21,9 +21,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.gyf.immersionbar.ImmersionBar;
 import com.one.browser.R;
 import com.one.browser.http.TranslateUtil;
 import com.one.browser.onClick.itemOnClick;
+import com.one.browser.utils.HttpState;
+import com.one.browser.utils.HttpUtil;
 
 import java.util.Objects;
 
@@ -50,6 +53,15 @@ public class SysFanActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fan);
+
+
+        ImmersionBar.with(this)
+                .fitsSystemWindows(true)
+                .statusBarColor(R.color.appbarColor)
+                .navigationBarColor(R.color.backgroundColor)
+                .autoDarkModeEnable(true)
+                .navigationBarDarkIcon(true)
+                .init();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Google翻译");
@@ -176,8 +188,19 @@ public class SysFanActivity extends AppCompatActivity {
                 new TranslateUtil().getMessage(editText.getText().toString(), left, right, result -> {
                     Log.i("TAG", "onSuccess: >>> " + result);
                     JSONObject jsonObject = JSON.parseObject(result);
-                    String data = jsonObject.getString("TargetText");
-                    textView.setText(data);
+                    int code = jsonObject.getInteger("code");
+                    String targetText;
+                    if (code == HttpState.SUCCESS.getI()) {
+
+                        String tarData = jsonObject.getString("data");
+                        JSONObject dataObject = JSON.parseObject(tarData);
+                        targetText = dataObject.getString("TargetText");
+                        Log.i("TAG", "onSuccess: >>> " + targetText);
+                    } else {
+                        targetText = "翻译失败";
+                        Log.i("TAG", "onCreate: 翻译失败");
+                    }
+                    textView.setText(targetText);
                     itemOnClick.loadDialog.dismiss();
                 });
             }

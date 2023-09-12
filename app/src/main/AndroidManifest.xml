@@ -55,7 +55,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <!-- 浏览器打开此应用 -->
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data android:scheme="http" />
                 <data android:scheme="https" />
                 <data android:scheme="about" />
@@ -63,10 +62,8 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <data android:scheme="http" />
                 <data android:scheme="https" />
                 <data android:scheme="inline" />
@@ -79,13 +76,11 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.WEB_SEARCH" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -98,19 +93,19 @@
             android:name=".more.BookmarkActivity"
             android:exported="false"
             android:label="书签页面"
-            android:theme="@style/Theme.one.NoActionBar" />
+            android:theme="@style/BaseTheme" />
         <activity
             android:name=".more.HistoryActivity"
             android:label="历史页面"
-            android:theme="@style/Theme.one.NoActionBar" />
+            android:theme="@style/BaseTheme" />
         <activity
             android:name=".more.DownloadActivity"
             android:label="下载页面"
-            android:theme="@style/Theme.one.NoActionBar" />
+            android:theme="@style/BaseTheme" />
         <activity
             android:name=".more.ScriptActivity"
             android:label="脚本页面"
-            android:theme="@style/Theme.one.NoActionBar" />
+            android:theme="@style/BaseTheme" />
         <activity
             android:name=".more.SettingActivity"
             android:label="软件设置"
@@ -119,6 +114,11 @@
             android:name=".activity.SysFanActivity"
             android:exported="false"
             android:label="翻译页面"
+            android:theme="@style/Theme.one.NoActionBar" />
+        <activity
+            android:name=".activity.SysChineseActivity"
+            android:exported="false"
+            android:label="汉字词典"
             android:theme="@style/Theme.one.NoActionBar" />
         <activity
             android:name=".activity.SysListActivity"
@@ -148,12 +148,23 @@
             android:label="图片取色"
             android:theme="@style/Theme.one.NoActionBar" />
         <activity
+            android:name=".activity.SysIdiomActivity"
+            android:exported="false"
+            android:label="成语查询"
+            android:theme="@style/Theme.one.NoActionBar" />
+        <activity
+            android:name=".activity.SysEwmActivity"
+            android:exported="false"
+            android:label="二维码生成"
+            android:theme="@style/Theme.one.NoActionBar" />
+        <activity
             android:name=".activity.SysBase64Activity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+            android:exported="false"
             android:hardwareAccelerated="true"
             android:label="Base64编码"
-            android:exported="false"
-            android:theme="@style/MaterialButtonTheme"/>
+            android:theme="@style/MaterialButtonTheme" />
+
         <meta-data
             android:name="android.max_aspect"
             android:value="2.4" />

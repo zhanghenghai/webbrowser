@@ -34,8 +34,6 @@ import java.util.Objects;
  * @author 18517
  */
 public class BookmarkActivity extends AppCompatActivity {
-
-
     /**
      * 弹窗
      */
