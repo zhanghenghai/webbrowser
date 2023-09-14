@@ -55,6 +55,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <!-- 浏览器打开此应用 -->
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="http" />
                 <data android:scheme="https" />
                 <data android:scheme="about" />
@@ -62,8 +63,10 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:scheme="http" />
                 <data android:scheme="https" />
                 <data android:scheme="inline" />
@@ -76,11 +79,13 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.WEB_SEARCH" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -164,6 +169,18 @@
             android:hardwareAccelerated="true"
             android:label="Base64编码"
             android:theme="@style/MaterialButtonTheme" />
+        <activity
+            android:name=".activity.SysTphbActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+            android:hardwareAccelerated="true"
+            android:label="图片转黑白"
+            android:requestLegacyExternalStorage="true"
+            android:theme="@style/Theme.one.NoActionBar" />
+        <activity
+            android:name=".activity.SysImageColourActivity"
+            android:exported="false"
+            android:label="图片上色"
+            android:theme="@style/Theme.one.NoActionBar" />
 
         <meta-data
             android:name="android.max_aspect"

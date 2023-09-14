@@ -52,6 +52,8 @@ android {
 }
 
 dependencies {
+    // 图片框架
+    implementation 'com.squareup.picasso:picasso:2.8'
     // 颜色选择器
     implementation 'com.github.QuadFlask:colorpicker:0.0.15'
     // uCrop 是一个用于 Android 图片裁剪的开源库，它提供了强大且易于使用的裁剪功能，适用于各种图像处理需求。

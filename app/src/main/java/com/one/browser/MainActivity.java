@@ -81,8 +81,10 @@ import com.one.browser.activity.SysClockActivity;
 import com.one.browser.activity.SysEwmActivity;
 import com.one.browser.activity.SysFanActivity;
 import com.one.browser.activity.SysIdiomActivity;
+import com.one.browser.activity.SysImageColourActivity;
 import com.one.browser.activity.SysSelectActivity;
 import com.one.browser.activity.SysTPAsActivity;
+import com.one.browser.activity.SysTphbActivity;
 import com.one.browser.adapter.DialogPageAdapter;
 import com.one.browser.config.AppConfig;
 import com.one.browser.databinding.ActivityMainBinding;
@@ -389,7 +391,7 @@ public class MainActivity extends SysBaseActivity {
 
             switch (item.getItemId()) {
                 // 成语
-                case R.id.sys_idiom:{
+                case R.id.sys_idiom: {
                     Intent intent = new Intent(MainActivity.this, SysIdiomActivity.class);
                     startActivity(intent);
                     break;
@@ -417,22 +419,40 @@ public class MainActivity extends SysBaseActivity {
                 case R.id.sys_colorPicker: {
                     Intent intent = new Intent(MainActivity.this, SysTPAsActivity.class);
                     startActivity(intent);
+                    break;
                 }
                 // Base64
                 case R.id.sys_baseImage: {
                     Intent intent = new Intent(MainActivity.this, SysBase64Activity.class);
                     startActivity(intent);
+                    break;
                 }
                 // 中文词典
                 case R.id.sys_chinese: {
                     Intent intent = new Intent(MainActivity.this, SysChineseActivity.class);
                     startActivity(intent);
+                    break;
                 }
                 // 二维码生成
-                case R.id.sys_qr:{
+                case R.id.sys_qr: {
                     Intent intent = new Intent(MainActivity.this, SysEwmActivity.class);
                     startActivity(intent);
+                    break;
                 }
+                // 图片转黑白
+                case R.id.sys_black_and_white: {
+                    Intent intent = new Intent(MainActivity.this, SysTphbActivity.class);
+                    startActivity(intent);
+                    break;
+                }
+                // 图片高清
+                case R.id.sys_repair: {
+                    Intent intent = new Intent(MainActivity.this, SysImageColourActivity.class);
+                    startActivity(intent);
+                    break;
+                }
+
+
             }
             return true;
         });

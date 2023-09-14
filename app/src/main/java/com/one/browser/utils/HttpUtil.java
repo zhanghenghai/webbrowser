@@ -21,10 +21,14 @@ public class HttpUtil {
     /**
      * 成语接口
      */
-     public static final String IDIOM = "http://192.168.8.100:8080/api/idiom?";
-
-
-     /**汉字词典*/
-     public static final String CHINESE = "http://192.168.8.100:8080/api/getSysChineseList?";
+    public static final String IDIOM = "http://192.168.8.100:8080/api/idiom?";
+    /**
+     * 汉字词典
+     */
+    public static final String CHINESE = "http://192.168.8.100:8080/api/getSysChineseList?";
+    /**
+     * 图片高清
+     */
+    public static final String RESTORATION = "http://192.168.8.100:8088/sys_ImageRepair/getSysImageRepair";
 
 }

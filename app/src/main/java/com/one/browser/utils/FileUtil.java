@@ -37,19 +37,6 @@ import java.util.Date;
 
 public class FileUtil {
 
-    // 判断文件是否存在，不存在创建文件
-    public static void checkFileExists(String path) {
-        File file = new File(path);
-        if (!file.exists()) {   //不存在则新建
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-
     private static void createNewFile(String path) {
         int lastSep = path.lastIndexOf(File.separator);
         if (lastSep > 0) {
@@ -112,7 +99,6 @@ public class FileUtil {
                 if (fileWriter != null) {
                     fileWriter.close();
                 }
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -468,8 +454,7 @@ public class FileUtil {
             return;
         }
         Bitmap src = BitmapFactory.decodeFile(fromPath);
-        Bitmap bitmap = Bitmap.createBitmap(src.getWidth(), src
-                .getHeight(), Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap(src.getWidth(), src.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
 
         final int color = 0xff424242;
@@ -508,6 +493,7 @@ public class FileUtil {
         if (width > w) {
             x = (width - w) / 2;
         }
+
         if (height > h) {
             y = (height - h) / 2;
         }

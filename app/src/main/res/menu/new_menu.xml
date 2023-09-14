@@ -51,6 +51,10 @@
             android:icon="@drawable/drop_line"
             android:title="图片转黑白" />
         <item
+            android:id="@+id/sys_repair"
+            android:icon="@drawable/drop_line"
+            android:title="图片上色" />
+        <item
             android:id="@+id/sys_baseImage"
             android:icon="@drawable/landscape_fill"
             android:title="图片转Base4码" />

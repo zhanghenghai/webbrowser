@@ -1,16 +1,18 @@
 package com.one.browser.activity;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.util.Base64;
+import android.provider.MediaStore;
+
+import android.util.Log;
 import android.widget.AutoCompleteTextView;
 
 import com.google.android.material.button.MaterialButton;
@@ -19,9 +21,14 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.gyf.immersionbar.ImmersionBar;
 import com.one.browser.R;
+import com.one.browser.utils.FileUtil;
 import com.tapadoo.alerter.Alerter;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Base64;
 
 /**
  * @author 18517
@@ -33,8 +40,8 @@ public class SysBase64Activity extends AppCompatActivity {
     private TextInputEditText textInputEditText;
     private TextInputLayout textInputLayout;
     private AutoCompleteTextView textView;
-    private MaterialButton jia;
-    private MaterialButton jie;
+    private MaterialButton select;
+    public final int REQ_CD_IMAGE = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,52 +63,21 @@ public class SysBase64Activity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
         init();
     }
-    private void init(){
+
+    private void init() {
         textInputEditText = findViewById(R.id.textInputEditText);
         textInputLayout = findViewById(R.id.textInputLayout);
         textView = findViewById(R.id.textview);
         card1 = findViewById(R.id.card1);
-        jia = findViewById(R.id.jia);
-        jie = findViewById(R.id.jie);
+        select = findViewById(R.id.select);
 
-        textInputEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                textInputLayout.setErrorEnabled(false);
-            }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
+        select.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+            startActivityForResult(intent, REQ_CD_IMAGE);
         });
 
-        jia.setOnClickListener(v -> {
-            if (TextUtils.isEmpty(textInputEditText.getText().toString())){
-                textInputLayout.setError("请输入内容");
-                textInputLayout.setErrorEnabled(true);
-            }else {
-                try {
-                    textView.setText(base64Encode(textInputEditText.getText().toString(), "UTF-8"));
-                } catch (Exception e) {
-                }
-            }
-        });
-
-        jie.setOnClickListener(v -> {
-            if (TextUtils.isEmpty(textInputEditText.getText().toString())){
-                textInputLayout.setError("请输入内容");
-                textInputLayout.setErrorEnabled(true);
-            }else {
-                try {
-                    textView.setText(base64Decode(textInputEditText.getText().toString(), "UTF-8"));
-                } catch (Exception e) {
-                }
-            }
-        });
 
         card1.setOnClickListener(v -> {
             ((ClipboardManager) v.getContext().getSystemService(CLIPBOARD_SERVICE)).setPrimaryClip(ClipData.newPlainText("clipboard", textView.getText().toString()));
@@ -114,42 +90,14 @@ public class SysBase64Activity extends AppCompatActivity {
 
     }
 
-    /**
-     * Base64加密字符串
-     * @param content -- 代加密字符串
-     * @param charsetName -- 字符串编码方式
-     * @return
-     */
-    private String base64Encode(String content, String charsetName) {
-        if (TextUtils.isEmpty(charsetName)) {
-            charsetName = "UTF-8";
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQ_CD_IMAGE) {
+            if (resultCode == Activity.RESULT_OK) {
+                String path = FileUtil.convertUriToFilePath(getApplicationContext(), data.getData());
+                Log.i("TAG", "onActivityResult: 回调图片地址 >>>>>>>" + path);
+            }
         }
-        try {
-            byte[] contentByte = content.getBytes(charsetName);
-            return Base64.encodeToString(contentByte, Base64.DEFAULT);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return "";
     }
-
-    /**
-     * Base64解密字符串
-     * @param content -- 待解密字符串
-     * @param charsetName -- 字符串编码方式
-     * @return
-     */
-    private String base64Decode(String content, String charsetName) {
-        if (TextUtils.isEmpty(charsetName)) {
-            charsetName = "UTF-8";
-        }
-        byte[] contentByte = Base64.decode(content, Base64.DEFAULT);
-        try {
-            return new String(contentByte, charsetName);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
 }
