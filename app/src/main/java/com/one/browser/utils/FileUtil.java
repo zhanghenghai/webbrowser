@@ -454,7 +454,8 @@ public class FileUtil {
             return;
         }
         Bitmap src = BitmapFactory.decodeFile(fromPath);
-        Bitmap bitmap = Bitmap.createBitmap(src.getWidth(), src.getHeight(), Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap(src.getWidth(), src
+                .getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
 
         final int color = 0xff424242;

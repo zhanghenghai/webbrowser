@@ -181,6 +181,11 @@
             android:exported="false"
             android:label="图片上色"
             android:theme="@style/Theme.one.NoActionBar" />
+        <activity
+            android:name=".activity.SysTpsyActivity"
+            android:exported="false"
+            android:label="图片水印"
+            android:theme="@style/Theme.one.NoActionBar" />
 
         <meta-data
             android:name="android.max_aspect"

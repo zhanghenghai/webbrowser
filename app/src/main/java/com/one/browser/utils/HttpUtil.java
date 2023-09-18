@@ -29,6 +29,8 @@ public class HttpUtil {
     /**
      * 图片高清
      */
-    public static final String RESTORATION = "http://192.168.8.100:8088/sys_ImageRepair/getSysImageRepair";
+    public static final String RESTORATION = "http://192.168.8.210:8088/sys_ImageRepair/getSysImageRepair";
+    /*图片转BASE64*/
+    public static final String BASE64Image = "http://192.168.8.210:8088/sys_ImageBase64/getBase64";
 
 }

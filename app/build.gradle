@@ -52,6 +52,8 @@ android {
 }
 
 dependencies {
+    // 水印
+    implementation 'com.huangyz0918:androidwm-light:0.1.2'
     // 图片框架
     implementation 'com.squareup.picasso:picasso:2.8'
     // 颜色选择器

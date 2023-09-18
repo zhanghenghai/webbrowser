@@ -85,6 +85,7 @@ import com.one.browser.activity.SysImageColourActivity;
 import com.one.browser.activity.SysSelectActivity;
 import com.one.browser.activity.SysTPAsActivity;
 import com.one.browser.activity.SysTphbActivity;
+import com.one.browser.activity.SysTpsyActivity;
 import com.one.browser.adapter.DialogPageAdapter;
 import com.one.browser.config.AppConfig;
 import com.one.browser.databinding.ActivityMainBinding;
@@ -448,6 +449,12 @@ public class MainActivity extends SysBaseActivity {
                 // 图片高清
                 case R.id.sys_repair: {
                     Intent intent = new Intent(MainActivity.this, SysImageColourActivity.class);
+                    startActivity(intent);
+                    break;
+                }
+                // 图片水印
+                case R.id.sys_watermark: {
+                    Intent intent = new Intent(MainActivity.this, SysTpsyActivity.class);
                     startActivity(intent);
                     break;
                 }
