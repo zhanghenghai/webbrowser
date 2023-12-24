@@ -71,7 +71,7 @@
             android:icon="@drawable/time_line"
             android:title="时间屏幕" />
         <item
-            android:id="@+id/sys_subtitle"
+            android:id="@+id/sys_roll_led"
             android:icon="@drawable/closed_captioning_line"
             android:title="滚动字幕" />
         <item

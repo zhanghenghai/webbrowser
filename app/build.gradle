@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace 'com.one.browser'
-    compileSdk 32
+    compileSdk 33
 
     viewBinding {
         enabled = true
@@ -13,14 +13,13 @@ android {
 
     defaultConfig {
         applicationId "com.one.browser"
-        minSdk 24
-        targetSdk 32
-        versionCode 1
-        versionName "1.0"
-
+        minSdkVersion 26
+        targetSdkVersion 33
+        versionCode 20231210
+        versionName "1.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary true
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
         }
     }
 
@@ -52,6 +51,10 @@ android {
 }
 
 dependencies {
+    // 图片添加贴图
+    implementation 'com.burhanrashid52:photoeditor:3.0.1'
+    // 图片压缩
+    implementation 'top.zibin:Luban:1.1.8'
     // 水印
     implementation 'com.huangyz0918:androidwm-light:0.1.2'
     // 图片框架
@@ -62,8 +65,6 @@ dependencies {
     implementation 'com.github.yalantis:ucrop:2.2.6'
     // 开源的条形码和二维码处理库
     implementation 'com.google.zxing:core:3.4.1'
-    // PermissionX 是一个用于简化 Android 运行时权限管理的库，可以帮助你更轻松地处理应用程序中的权限请求和授权
-    implementation 'com.guolindev.permissionx:permissionx:1.5.1'
     //离散的滑动条
     implementation 'org.adw.library:discrete-seekbar:1.0.1'
     // RxJava

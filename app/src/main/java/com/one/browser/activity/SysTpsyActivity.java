@@ -46,7 +46,6 @@ import com.gyf.immersionbar.ImmersionBar;
 import com.one.browser.R;
 import com.one.browser.onClick.itemOnClick;
 import com.one.browser.utils.FileUtil;
-import com.permissionx.guolindev.PermissionX;
 import com.tapadoo.alerter.Alerter;
 import com.watermark.androidwm_light.WatermarkBuilder;
 import com.watermark.androidwm_light.bean.WatermarkText;
@@ -130,22 +129,6 @@ public class SysTpsyActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 itemOnClick.LoadingDialog(SysTpsyActivity.this);
-
-                if (Build.VERSION.SDK_INT >= 30) {
-                    PermissionX.init(SysTpsyActivity.this)
-                            .permissions(Manifest.permission.MANAGE_EXTERNAL_STORAGE)
-                            .request((allGranted, grantedList, deniedList) -> {
-                                if (allGranted) {
-                                    Toast.makeText(SysTpsyActivity.this, "已获取文件访问权限", Toast.LENGTH_LONG).show();
-                                } else {
-                                    Toast.makeText(SysTpsyActivity.this, "未获得文件访问权限", Toast.LENGTH_LONG).show();
-
-                                    Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-                                    intent.setData(Uri.parse("package:" + getPackageName()));
-                                    startActivityForResult(intent, 3);
-                                }
-                            });
-                }
 
 
 

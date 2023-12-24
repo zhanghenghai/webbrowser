@@ -132,9 +132,30 @@
         <item name="alertDialogTheme">@style/Dialog.Alert.one</item>
     </style>
 
+    <!--  主程序主题  -->
     <style name="Theme.one.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+    </style>
+
+
+    <!--  侧栏功能主题  -->
+    <style name="Theme.one.NoActionBarFunction">
+        <item name="windowActionBar">true</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <!--状态栏颜色为透明色-->
+        <item name="android:statusBarColor">@color/Transparent</item>
+        <!--状态栏文字颜色-->
+        <item name="android:windowLightStatusBar">true</item>
+        <!--导航栏颜色-->
+        <item name="android:navigationBarColor">@color/white</item>
+    </style>
+
+
+    <style name="TabItemApplyText" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">16sp</item>
     </style>
 
 </resources>

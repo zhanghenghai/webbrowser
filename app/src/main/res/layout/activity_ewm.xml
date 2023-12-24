@@ -130,13 +130,7 @@
                     app:chipIcon="@drawable/round"
                     app:chipIconTint="#FFFFFF" />
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="LOGO"
-                    app:chipBackgroundColor="@color/itemBackColor"
-                    app:chipIcon="@drawable/ic_twotone_logo_24" />
+
             </LinearLayout>
 
             <com.google.android.material.card.MaterialCardView

@@ -34,11 +34,7 @@ public class NewWeb extends WebView {
         webSettings.setBlockNetworkImage(false);
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
         webSettings.setJavaScriptEnabled(true);
-        // 启用应用缓存
-        webSettings.setAppCacheEnabled(true);
-        // 设置缓存大小为10MB
-        webSettings.setAppCacheMaxSize(100 * 1024 * 1024);
-        webSettings.setAppCachePath(context.getCacheDir().getAbsolutePath());
+
         // 混合内容加载
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);

@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -68,9 +69,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 
+import com.alibaba.fastjson.TypeReference;
 import com.google.android.material.internal.NavigationMenuView;
 import com.kymjs.rxvolley.RxVolley;
 import com.kymjs.rxvolley.client.HttpCallback;
@@ -78,23 +82,30 @@ import com.one.browser.activity.SysBase64Activity;
 import com.one.browser.activity.SysBaseActivity;
 import com.one.browser.activity.SysChineseActivity;
 import com.one.browser.activity.SysClockActivity;
+import com.one.browser.activity.SysCompassActivity;
 import com.one.browser.activity.SysEwmActivity;
 import com.one.browser.activity.SysFanActivity;
 import com.one.browser.activity.SysIdiomActivity;
 import com.one.browser.activity.SysImageColourActivity;
-import com.one.browser.activity.SysSelectActivity;
+import com.one.browser.activity.SysPhotoActivity;
+import com.one.browser.activity.SysRollLedActivity;
 import com.one.browser.activity.SysTPAsActivity;
 import com.one.browser.activity.SysTphbActivity;
 import com.one.browser.activity.SysTpsyActivity;
 import com.one.browser.adapter.DialogPageAdapter;
+import com.one.browser.adapter.HomeAdapter;
 import com.one.browser.config.AppConfig;
 import com.one.browser.databinding.ActivityMainBinding;
 import com.one.browser.dialog.MultiDialog;
 import com.one.browser.dialog.OfficialDialog;
 import com.one.browser.entity.DialogWindow;
+import com.one.browser.entity.Home;
 import com.one.browser.entity.Notice;
+import com.one.browser.entity.Resource;
+import com.one.browser.entity.Size;
 import com.one.browser.entity.WebMessage;
 
+import com.one.browser.http.HttpUtil;
 import com.one.browser.more.BookmarkActivity;
 import com.one.browser.more.DownloadActivity;
 import com.one.browser.more.HistoryActivity;
@@ -103,11 +114,15 @@ import com.one.browser.more.SettingActivity;
 import com.one.browser.service.FileDownloaded;
 import com.one.browser.sqlite.Bookmark;
 import com.one.browser.sqlite.BookmarkDao;
+import com.one.browser.sqlite.CommonDao;
 import com.one.browser.sqlite.DownloadDao;
+import com.one.browser.sqlite.ExaminationDao;
 import com.one.browser.sqlite.History;
 import com.one.browser.sqlite.HistoryDao;
 import com.one.browser.sqlite.Script;
 import com.one.browser.sqlite.ScriptDao;
+import com.one.browser.sqlite.StudentDao;
+import com.one.browser.sqlite.VisaDao;
 import com.one.browser.sqlite.Website;
 import com.one.browser.sqlite.WebsiteDao;
 import com.one.browser.utils.BitMapUtil;
@@ -118,18 +133,27 @@ import com.one.browser.web.NewWeb;
 
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 
 /**
@@ -314,6 +338,8 @@ public class MainActivity extends SysBaseActivity {
 
     private ValueAnimator animator;
 
+    private HomeAdapter homeAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -357,6 +383,25 @@ public class MainActivity extends SysBaseActivity {
         ObjectInit();
         // 配置文件
         AppConfig();
+        // 首页列表
+        homeList();
+        // 侧栏配置
+        sideBarConfig();
+    }
+
+    private void sideBarConfig() {
+        server();
+    }
+
+    private void homeList() {
+
+
+        List<Home> list = new ArrayList<>();
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL);
+        binding.homeRecyclerView.setLayoutManager(layoutManager);
+        homeAdapter = new HomeAdapter(list, MainActivity.this);
+
+
     }
 
     private void AppConfig() {
@@ -399,7 +444,7 @@ public class MainActivity extends SysBaseActivity {
                 }
                 // 证件
                 case R.id.sys_portrait: {
-                    Intent intent = new Intent(MainActivity.this, SysSelectActivity.class);
+                    Intent intent = new Intent(MainActivity.this, SysPhotoActivity.class);
                     intent.putExtra("title", "常用证件");
                     startActivity(intent);
                     break;
@@ -434,6 +479,12 @@ public class MainActivity extends SysBaseActivity {
                     startActivity(intent);
                     break;
                 }
+                // 指南针
+                case R.id.sys_compass: {
+                    Intent intent = new Intent(MainActivity.this, SysCompassActivity.class);
+                    startActivity(intent);
+                    break;
+                }
                 // 二维码生成
                 case R.id.sys_qr: {
                     Intent intent = new Intent(MainActivity.this, SysEwmActivity.class);
@@ -455,6 +506,12 @@ public class MainActivity extends SysBaseActivity {
                 // 图片水印
                 case R.id.sys_watermark: {
                     Intent intent = new Intent(MainActivity.this, SysTpsyActivity.class);
+                    startActivity(intent);
+                    break;
+                }
+                // 滚动字幕
+                case R.id.sys_roll_led: {
+                    Intent intent = new Intent(MainActivity.this, SysRollLedActivity.class);
                     startActivity(intent);
                     break;
                 }
@@ -1817,6 +1874,143 @@ public class MainActivity extends SysBaseActivity {
         //关闭线程池
         mExecutor.shutdown();
     }
+
+
+    private void server() {
+        try {
+            new Thread(() -> {
+                // 网络请求
+                OkHttpClient okHttpClient = new OkHttpClient.Builder().readTimeout(5, TimeUnit.SECONDS).build();
+                Request request = new Request.Builder().url(HttpUtil.HTTP + "/api/papers").get().build();
+                Call call = okHttpClient.newCall(request);
+                call.enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        // 异步请求失败
+                        Log.i("TAG", "onFailure: 异步请求失败");
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) {
+                        Log.i("TAG", "onResponse: 异步请求成功");
+                        try {
+                            // 异步请求成功
+                            assert response.body() != null;
+                            String json = response.body().string();
+                            Log.i("TAG", "获取数据 >>> : " + json);
+                            JSONObject jsonObject = JSON.parseObject(json);
+                            String data = jsonObject.getString("data");
+                            if (!data.isEmpty()) {
+                                JSONArray datas = JSONArray.parseArray(data);
+                                Iterator iterator = datas.iterator();
+
+                                while (iterator.hasNext()) {
+                                    JSONObject js = JSON.parseObject(iterator.next().toString());
+                                    if (js.getString("常用尺寸") != null) {
+                                        CommonDao commonDao = new CommonDao(getApplicationContext());
+                                        String str = js.getString("常用尺寸");
+                                        List<Size> list = JSONObject.parseObject(str, new TypeReference<List<Size>>() {
+                                        });
+                                        Log.i("TAG", "获取网络数据大小: " + list.size());
+                                        Log.i("TAG", "onResponse: " + commonDao.getAll());
+                                        if (commonDao.getAll() != null) {
+                                            if (list.size() != commonDao.getAll().size()) {
+                                                commonDao.deleteData();
+                                                for (Size s : list) {
+                                                    System.out.println("常用尺寸标题 >>> " + s.getClassifyTitle());
+                                                    commonDao.inserData(new Resource(s.getClassifyTitle(), s.getClassifyPixelX(), s.getClassifyPixelY(), s.getClassifyWashX(), s.getClassifyWashY()));
+                                                }
+                                            }
+                                        } else {
+                                            for (Size s : list) {
+                                                System.out.println("常用尺寸标题 >>> " + s.getClassifyTitle());
+                                                commonDao.inserData(new Resource(s.getClassifyTitle(), s.getClassifyPixelX(), s.getClassifyPixelY(), s.getClassifyWashX(), s.getClassifyWashY()));
+                                            }
+                                        }
+
+
+                                    }
+                                    if (js.getString("学生证件") != null) {
+                                        StudentDao studentDao = new StudentDao(getApplicationContext());
+                                        String str = js.getString("学生证件");
+                                        List<Size> list = JSONObject.parseObject(str, new TypeReference<List<Size>>() {
+                                        });
+                                        if (studentDao.getAll() != null) {
+                                            if (list.size() != studentDao.getAll().size()) {
+                                                studentDao.deleteData();
+                                                for (Size s : list) {
+                                                    System.out.println("学生证件标题 >>> " + s.getClassifyTitle());
+                                                    studentDao.inserData(new Resource(s.getClassifyTitle(), s.getClassifyPixelX(), s.getClassifyPixelY(), s.getClassifyWashX(), s.getClassifyWashY()));
+                                                }
+                                            }
+                                        } else {
+                                            for (Size s : list) {
+                                                System.out.println("学生证件标题 >>> " + s.getClassifyTitle());
+                                                studentDao.inserData(new Resource(s.getClassifyTitle(), s.getClassifyPixelX(), s.getClassifyPixelY(), s.getClassifyWashX(), s.getClassifyWashY()));
+                                            }
+                                        }
+
+                                    }
+                                    if (js.getString("考试证件") != null) {
+                                        ExaminationDao examinationDao = new ExaminationDao(getApplicationContext());
+                                        String str = js.getString("考试证件");
+                                        List<Size> list = JSONObject.parseObject(str, new TypeReference<List<Size>>() {
+                                        });
+                                        if (examinationDao.getAll() != null) {
+                                            if (list.size() != examinationDao.getAll().size()) {
+                                                examinationDao.deleteData();
+                                                for (Size s : list) {
+                                                    System.out.println("考试证件标题 >>> " + s.getClassifyTitle());
+                                                    examinationDao.inserData(new Resource(s.getClassifyTitle(), s.getClassifyPixelX(), s.getClassifyPixelY(), s.getClassifyWashX(), s.getClassifyWashY()));
+                                                }
+                                            }
+                                        } else {
+                                            for (Size s : list) {
+                                                System.out.println("考试证件标题 >>> " + s.getClassifyTitle());
+                                                examinationDao.inserData(new Resource(s.getClassifyTitle(), s.getClassifyPixelX(), s.getClassifyPixelY(), s.getClassifyWashX(), s.getClassifyWashY()));
+                                            }
+                                        }
+
+                                    }
+
+                                    if (js.getString("签证证件") != null) {
+                                        VisaDao visaDao = new VisaDao(getApplicationContext());
+                                        String str = js.getString("签证证件");
+                                        List<Size> list = JSONObject.parseObject(str, new TypeReference<List<Size>>() {
+                                        });
+                                        if (visaDao.getAll() != null) {
+                                            if (list.size() != visaDao.getAll().size()) {
+                                                visaDao.deleteData();
+                                                for (Size s : list) {
+                                                    System.out.println("签证证件标题 >>> " + s.getClassifyTitle());
+                                                    visaDao.inserData(new Resource(s.getClassifyTitle(), s.getClassifyPixelX(), s.getClassifyPixelY(), s.getClassifyWashX(), s.getClassifyWashY()));
+                                                }
+                                            }
+                                        } else {
+                                            for (Size s : list) {
+                                                System.out.println("签证证件标题 >>> " + s.getClassifyTitle());
+                                                visaDao.inserData(new Resource(s.getClassifyTitle(), s.getClassifyPixelX(), s.getClassifyPixelY(), s.getClassifyWashX(), s.getClassifyWashY()));
+                                            }
+                                        }
+
+                                    }
+                                }
+                            }
+                        } catch (JSONException | IOException e) {
+                            Log.i("TAG", "版本更新 JSON解析失败: ");
+                        }
+
+
+                    }
+                });
+            }).start();
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "网络异常,未能更新证件信息", Toast.LENGTH_SHORT).show();
+            Log.i("TAG", "server: " + e.getMessage());
+        }
+
+    }
+
 
     /**
      * 使用内部类可以无条件使用外围类所有元素

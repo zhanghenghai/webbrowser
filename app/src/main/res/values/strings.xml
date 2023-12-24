@@ -78,4 +78,16 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_download">DownloadActivity</string>
+
+
+    <string name="app_blue">蓝色</string>
+    <string name="white">白色</string>
+    <string name="red">红色</string>
+    <string name="babyblue">淡蓝色</string>
+    <string name="gray">灰色</string>
+    <string name="pompadour">淡红色</string>
+
+    <string name="image_size">图片质量：</string>
+    <string name="save">保存</string>
+    <string name="x">x</string>
 </resources>

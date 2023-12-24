@@ -2,6 +2,7 @@ package com.one.browser.activity;
 
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
@@ -14,8 +15,10 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.appcompat.widget.Toolbar;
@@ -36,6 +39,7 @@ import com.one.browser.sqlite.CustomDao;
 import com.one.browser.sqlite.ExaminationDao;
 import com.one.browser.sqlite.StudentDao;
 import com.one.browser.sqlite.VisaDao;
+import com.one.browser.utils.MyHdgUtils;
 
 
 import java.util.ArrayList;
@@ -43,7 +47,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class SysListActivity extends AppCompatActivity {
+/**
+ * @author 18517
+ */
+public class SysPhotoActivity extends AppCompatActivity {
     private final Intent image = new Intent(Intent.ACTION_PICK);
     private String[] titles = new String[]{"常用尺寸", "学生证件", "考试证件", "签证证件", "自定义"};
     private ArrayList<View> preview;
@@ -144,7 +151,6 @@ public class SysListActivity extends AppCompatActivity {
         }
 
 
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("尺寸大全");
         setSupportActionBar(toolbar);
@@ -200,7 +206,7 @@ public class SysListActivity extends AppCompatActivity {
             visa = (ArrayList<Resource>) visaDao.getAll();
         }
 
-        if (customDao.getAll() != null) {
+        if (customDao.getAll() !=null){
             custom = (ArrayList<Resource>) customDao.getAll();
         }
 
@@ -266,7 +272,7 @@ public class SysListActivity extends AppCompatActivity {
                             wash_x = student.get(positions).getWash_w();
                             wash_y = student.get(positions).getWash_y();
                             image.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-                            //startActivity();
+                            startActivity();
                         });
 
                         break;
@@ -287,7 +293,7 @@ public class SysListActivity extends AppCompatActivity {
                             wash_x = examination.get(positions).getWash_w();
                             wash_y = examination.get(positions).getWash_y();
                             image.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-                            //startActivity();
+                            startActivity();
                         });
                         break;
                     }
@@ -308,7 +314,7 @@ public class SysListActivity extends AppCompatActivity {
                             wash_y = visa.get(positions).getWash_y();
                             Log.i("TAG", "数据库查询: " + wash_y);
                             image.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-                            //startActivity();
+                            startActivity();
                         });
                         break;
                     }
@@ -330,19 +336,24 @@ public class SysListActivity extends AppCompatActivity {
                             wash_y = custom.get(positions).getWash_y();
                             Log.i("TAG", "数据库查询: " + wash_y);
                             image.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-                            //startActivity();
+                            startActivity();
                         });
 
 
                         floatingActionButton = findViewById(R.id.add_certificate);
                         floatingActionButton.setOnClickListener(view -> {
                             Log.i("TAG", "进行自定义");
-                            CertificateDialog.Builder builder = new CertificateDialog.Builder(SysListActivity.this, (certificate_title, certificate_width, certificate_height) -> {
-                                Log.i("TAG", "自定义标题: " + certificate_title);
-                                Log.i("TAG", "自定义宽度: " + certificate_width);
-                                Log.i("TAG", "自定义高度度: " + certificate_height);
+                            CertificateDialog.Builder builder = new CertificateDialog.Builder(SysPhotoActivity.this, (certificate_title, certificate_width, certificate_height) -> {
+                                Log.i("TAG", "自定义标题: "+certificate_title);
+                                Log.i("TAG", "自定义宽度: "+certificate_width);
+                                Log.i("TAG", "自定义高度度: "+certificate_height);
+                                if (certificate_title.isEmpty() && certificate_width.isEmpty() && certificate_height.isEmpty()){
+                                    Log.i("TAG", "自定义标题为null");
+                                    Toast.makeText(getApplicationContext(), "请填写完整内容", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
                                 // 进行数据插入
-                                customDao.inserData(new Resource(certificate_title + "（自定义）", Integer.parseInt(certificate_width), Integer.parseInt(certificate_height), 0, 0));
+                                customDao.inserData(new Resource(certificate_title+"（自定义）",Integer.parseInt(certificate_width),Integer.parseInt(certificate_height),0,0));
                                 custom.clear();
                                 custom.addAll(customDao.getAll());
                             });
@@ -397,21 +408,20 @@ public class SysListActivity extends AppCompatActivity {
         // 绑定适配器
         viewPager.setAdapter(pagerAdapter);
         // 设置初始界面
-        viewPager.setCurrentItem(default_title, false);
+        viewPager.setCurrentItem(default_title,false);
         Objects.requireNonNull(tabLayout.getTabAt(default_title)).select();
         // 打印
-        Log.i("TAG", "打印当前位置 >>>" + tabLayout.getSelectedTabPosition());
+        Log.i("TAG", "打印当前位置 >>>"+ tabLayout.getSelectedTabPosition());
         // 切换页面
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
 
     }
 
-
     private void startActivity() {
         Intent intent = new Intent(getApplicationContext(), SysSelectActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString("name", name);
+        bundle.putString("name",name);
         bundle.putInt("width", width);
         bundle.putInt("height", height);
         bundle.putInt("WashX", wash_x);
@@ -431,6 +441,8 @@ public class SysListActivity extends AppCompatActivity {
             views.setVisibility(View.GONE);
             // 显示
             listView.setVisibility(View.VISIBLE);
+            // 显示软键盘
+            MyHdgUtils.openKeyboard(getApplicationContext(), editText);
         });
         editText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -460,10 +472,11 @@ public class SysListActivity extends AppCompatActivity {
             wash_y = list.get(i).getWash_y();
             Log.i("TAG", "数据库查询: " + wash_y);
             image.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-            //startActivity();
+            startActivity();
         });
 
     }
+
 
 
     @Override

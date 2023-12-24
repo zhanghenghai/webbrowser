@@ -22,7 +22,6 @@ import com.gyf.immersionbar.ImmersionBar;
 import com.one.browser.R;
 import com.one.browser.onClick.itemOnClick;
 import com.one.browser.utils.FileUtil;
-import com.permissionx.guolindev.PermissionX;
 import com.tapadoo.alerter.Alerter;
 
 import java.text.SimpleDateFormat;
@@ -53,8 +52,6 @@ public class SysTphbActivity extends AppCompatActivity {
                 .navigationBarColor(R.color.backgroundColor)
                 .autoDarkModeEnable(true)
                 .navigationBarDarkIcon(true)
-                //.keyboardEnable(true)
-                //.keyboardMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
                 .init();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -62,12 +59,7 @@ public class SysTphbActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
 
         image.setType("image/*");
         image.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true);
@@ -82,21 +74,7 @@ public class SysTphbActivity extends AppCompatActivity {
 
         bctp.setOnClickListener(v -> {
 
-            if (Build.VERSION.SDK_INT >= 30) {
-                PermissionX.init(this)
-                        .permissions(Manifest.permission.MANAGE_EXTERNAL_STORAGE)
-                        .request((allGranted, grantedList, deniedList) -> {
-                            if (allGranted) {
-                                Toast.makeText(this, "已获取文件访问权限", Toast.LENGTH_LONG).show();
-                            } else {
-                                Toast.makeText(this, "未获得文件访问权限", Toast.LENGTH_LONG).show();
 
-                                Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-                                intent.setData(Uri.parse("package:" + getPackageName()));
-                                startActivityForResult(intent, 3);
-                            }
-                        });
-            }
 
 
 

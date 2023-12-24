@@ -90,19 +90,9 @@ public class SysImageColourActivity extends AppCompatActivity {
                         byte[] imageByte = new byte[fileInputStream.available()];
                         fileInputStream.read(imageByte);
                         fileInputStream.close();
-                        getRestoration(imageByte, new Message() {
-                            @Override
-                            public void success(String url) {
-                                Log.i("TAG", "success: >>>" + url);
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Picasso.get().load(url).into(picture);
-                                    }
-                                });
-
-
-                            }
+                        getRestoration(imageByte, url -> {
+                            Log.i("TAG", "success: >>>" + url);
+                            runOnUiThread(() -> Picasso.get().load(url).into(picture));
                         });
                     } catch (FileNotFoundException e) {
                         throw new RuntimeException(e);
