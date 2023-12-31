@@ -1,6 +1,6 @@
 package com.one.browser.activity;
 
-import android.annotation.SuppressLint;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -33,15 +33,10 @@ import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.google.android.material.tabs.TabLayout;
 import com.one.browser.R;
-import com.one.browser.adapter.AppSizeAdapter;
 import com.one.browser.entity.Certificate;
 import com.one.browser.entity.Resource;
 import com.one.browser.http.HumanFaceHttpServlet;
 import com.one.browser.http.PictureHttpServlet;
-import com.one.browser.sqlite.CommonDao;
-import com.one.browser.sqlite.ExaminationDao;
-import com.one.browser.sqlite.StudentDao;
-import com.one.browser.sqlite.VisaDao;
 import com.one.browser.utils.AlphaUtil;
 import com.one.browser.utils.BitmapUtils;
 import com.one.browser.utils.ImageUtil;
@@ -54,7 +49,7 @@ import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -69,7 +64,7 @@ import top.zibin.luban.OnCompressListener;
 public class SysApplyActivity extends AppCompatActivity {
 
     private final static String YES = "YES";
-    private final String[] titles = new String[]{"背景", "尺寸"};
+    private final String[] titles = new String[]{"背景", "质量"};
     private static final String TAG = SysApplyActivity.class.getSimpleName();
     private PhotoEditor mPhotoEditor;
     private ArrayList<View> pageView;
@@ -114,7 +109,7 @@ public class SysApplyActivity extends AppCompatActivity {
     private ImageView card_image4;
     private ImageView card_image5;
     private ImageView card_image6;
-
+    ;
     private LinearLayout views;
     private TabLayout tabLayout;
     private NoScrollViewPager viewPager;
@@ -177,8 +172,6 @@ public class SysApplyActivity extends AppCompatActivity {
         View view1 = inflater.inflate(R.layout.activity_app_bar1, null);
         View view4 = inflater.inflate(R.layout.activity_app_bar4, null);
         control = findViewById(R.id.control);
-        //实现状态栏文字颜色为暗色
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("图片编辑");
         setSupportActionBar(toolbar);
@@ -207,31 +200,12 @@ public class SysApplyActivity extends AppCompatActivity {
         // tab内容
         pageView = new ArrayList<>();
         pageView.add(view1);
+
         pageView.add(view4);
         // 数据库
-        CommonDao commonDao = new CommonDao(getApplicationContext());
-        ExaminationDao examinationDao = new ExaminationDao(getApplicationContext());
-        StudentDao studentDao = new StudentDao(getApplicationContext());
-        VisaDao visaDao = new VisaDao(getApplicationContext());
         resources = new ArrayList<>();
         certificates = new ArrayList<>();
 
-
-        if (commonDao.getAll() != null) {
-            resources.addAll(commonDao.getAll());
-        }
-
-        if (studentDao.getAll() != null) {
-            resources.addAll(studentDao.getAll());
-        }
-
-        if (examinationDao.getAll() != null) {
-            resources.addAll(examinationDao.getAll());
-        }
-
-        if (visaDao.getAll() != null) {
-            resources.addAll(visaDao.getAll());
-        }
 
         // 进行判断
         for (int i = 0; i < resources.size(); i++) {
@@ -401,10 +375,8 @@ public class SysApplyActivity extends AppCompatActivity {
 
                         break;
                     }
-
-
                     // 质量修改
-                    case 2: {
+                    case 1: {
                         discreteSeekBar = viewPager.findViewById(R.id.seekbar1);
                         discreteSeekBar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
                             @Override
@@ -471,14 +443,16 @@ public class SysApplyActivity extends AppCompatActivity {
         // 保存图片
         save.setOnClickListener(v -> {
             if (alpha != null || rawBitmap != null) {
-                Toast.makeText(this, "图片保存成功", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SysApplyActivity.this, "图片保存成功", Toast.LENGTH_SHORT).show();
                 // 保存图片
                 mPhotoEditor.clearHelperBox();
                 BitmapUtils.saveBitmap(SysApplyActivity.this, width, height, quality, mPhotoEditor);
             } else {
                 // 警告
-                Toast.makeText(this, "图片保存失败", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SysApplyActivity.this, "图片保存失败", Toast.LENGTH_SHORT).show();
+
             }
+
         });
 
 
@@ -572,6 +546,7 @@ public class SysApplyActivity extends AppCompatActivity {
                     @Override
                     public void lose() {
                         Toast.makeText(SysApplyActivity.this, "图片修改失败", Toast.LENGTH_SHORT).show();
+
                     }
                 });
             }
@@ -596,7 +571,7 @@ public class SysApplyActivity extends AppCompatActivity {
                         byte[] bytes = Base64.decode(data, Base64.DEFAULT);
                         alpha = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                         // 背景大小
-                        compound(recolor);
+                        compound(recolor);;
                         // 软件大小显示
                         runOnUiThread(() -> BitmapUtils.getKb(getApplicationContext(), width, height, mPhotoEditor, quality, bitmapSize -> {
                             Log.i(TAG, "图片大小: >>>> " + bitmapSize);
@@ -624,8 +599,6 @@ public class SysApplyActivity extends AppCompatActivity {
                             Toast.makeText(SysApplyActivity.this, "该图片无效", Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        // 加载等待页面
-                        Toast.makeText(SysApplyActivity.this, "背景替换中", Toast.LENGTH_SHORT).show();
                         // 创建视图
                         rawBitmap = ScaleBitmap.centerCrop(rawBitmap, width, height);
                         // 创建二进制对象
@@ -641,28 +614,20 @@ public class SysApplyActivity extends AppCompatActivity {
                                 Toast.makeText(SysApplyActivity.this, "网络请求失败", Toast.LENGTH_SHORT).show();
                             } else {
                                 if (result.equals(YES)) {
-                                    runOnUiThread(() -> {
-                                        Log.i(TAG, "succeed: >>>>>>> " + result);
-                                        // photoEditorView
-                                        photoEditorView.getSource().setAdjustViewBounds(true);
-                                        // 显示最终剪切图片
-                                        photoEditorView.getSource().setImageBitmap(rawBitmap);
-                                        // 图片质量
-                                        calculate = rawBitmap.copy(Bitmap.Config.ARGB_8888, true);
-                                        // 显示保存
-                                        save.setVisibility(View.VISIBLE);
-                                        // 显示控制台
-                                        panel.setVisibility(View.VISIBLE);
-                                        // 显示尺寸
-                                        runOnUiThread(() -> BitmapUtils.getKb(getApplicationContext(), width, height, mPhotoEditor, quality, bitmapSize -> {
-                                            Log.i(TAG, "图片大小: >>>> " + bitmapSize);
-                                            ll_image_size.setVisibility(View.VISIBLE);
-                                            imageSize.setText(bitmapSize + "KB");
-                                        }));
+                                    // 网络请求获取alpha
+                                    PictureHttpServlet.getBase64(originalBase64, result_base64 -> {
+                                        if (result_base64 == null) {
+                                            Log.i(TAG, "handleMessage: 网络请求失败");
+                                            Toast.makeText(SysApplyActivity.this, "网络请求失败", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Message msg = handler.obtainMessage();
+                                            msg.what = RESULT_OK;
+                                            msg.obj = result_base64;
+                                            handler.sendMessage(msg);
+                                        }
                                     });
-
                                 } else {
-                                    Toast.makeText(SysApplyActivity.this, "未检测到人脸", Toast.LENGTH_SHORT).show();
+                                   Toast.makeText(SysApplyActivity.this, "未检测到人脸", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
@@ -749,8 +714,6 @@ public class SysApplyActivity extends AppCompatActivity {
         }
 
     }
-
-
 
 
 

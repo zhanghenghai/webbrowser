@@ -15,10 +15,7 @@ import com.one.browser.R;
 import com.one.browser.entity.GroupedHistoryData;
 import com.one.browser.sqlite.History;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author 18517
@@ -74,7 +71,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 ((ItemViewHolder) holder).icon.setImageBitmap(BitmapFactory.decodeFile(item.getIcon()));
             } else {
                 Log.i("TAG", "显示本地图片 >>> ");
-                ((ItemViewHolder) holder).icon.setImageResource(R.drawable.time_line);
+                ((ItemViewHolder) holder).icon.setImageResource(R.drawable.ic_nv_time_line);
             }
             // 标题显示
             ((ItemViewHolder) holder).title.setText(item.getTitle());

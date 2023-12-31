@@ -9,7 +9,7 @@
             android:title="常用工具" />
         <item
             android:id="@+id/sys_translate"
-            android:icon="@drawable/translate"
+            android:icon="@drawable/ic_translate"
             android:background="@color/Transparent"
             android:title="翻译" />
         <item
@@ -24,8 +24,12 @@
             android:title="汉字词典" />
         <item
             android:id="@+id/sys_compass"
-            android:icon="@drawable/computer_line"
+            android:icon="@drawable/ic_nv_compass_line"
             android:title="指南针" />
+        <item
+            android:id="@+id/sys_recognition"
+            android:icon="@drawable/ic_nv_character_recognition_line"
+            android:title="文字识别" />
     </group>
     <group
         android:id="@+id/sys_two"
@@ -36,27 +40,35 @@
             android:title="图片工具" />
         <item
             android:id="@+id/sys_portrait"
-            android:icon="@drawable/contacts_line"
+            android:icon="@drawable/ic_nv_contacts_line"
             android:title="证件生成" />
         <item
             android:id="@+id/sys_colorPicker"
-            android:icon="@drawable/palette_line"
+            android:icon="@drawable/ic_nv_palette_line"
             android:title="图片取色" />
         <item
             android:id="@+id/sys_watermark"
-            android:icon="@drawable/drop_line"
+            android:icon="@drawable/ic_nv_drop_line"
             android:title="图片水印" />
         <item
+            android:id="@+id/sys_cartoon"
+            android:icon="@drawable/ic_nv_user_smile_line"
+            android:title="人脸动漫" />
+        <item
+            android:id="@+id/sys_beauty"
+            android:icon="@drawable/ic_nv_sparkling_line"
+            android:title="人脸美颜" />
+        <item
             android:id="@+id/sys_black_and_white"
-            android:icon="@drawable/drop_line"
+            android:icon="@drawable/ic_nv_lightbulb_line"
             android:title="图片转黑白" />
         <item
-            android:id="@+id/sys_repair"
-            android:icon="@drawable/drop_line"
-            android:title="图片上色" />
+            android:id="@+id/sys_image2pdf"
+            android:icon="@drawable/ic_nv_magic_line"
+            android:title="老照片修复" />
         <item
             android:id="@+id/sys_baseImage"
-            android:icon="@drawable/landscape_fill"
+            android:icon="@drawable/ic_nv_folder_image_line"
             android:title="图片转Base4码" />
     </group>
     <group
@@ -68,15 +80,15 @@
             android:title="制作工具" />
         <item
             android:id="@+id/sys_timeScreen"
-            android:icon="@drawable/time_line"
+            android:icon="@drawable/ic_nv_time_line"
             android:title="时间屏幕" />
         <item
             android:id="@+id/sys_roll_led"
-            android:icon="@drawable/closed_captioning_line"
+            android:icon="@drawable/ic_nv_closed_captioning_line"
             android:title="滚动字幕" />
         <item
             android:id="@+id/sys_qr"
-            android:icon="@drawable/qr_scan_2_line"
+            android:icon="@drawable/ic_nv_qr_code_line"
             android:title="二维码生成" />
     </group>
 </menu>

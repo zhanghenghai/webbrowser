@@ -151,6 +151,9 @@
         <item name="android:windowLightStatusBar">true</item>
         <!--导航栏颜色-->
         <item name="android:navigationBarColor">@color/white</item>
+        <item name="colorPrimary">#FF9E80</item>
+        <item name="colorOnPrimary">#FF9E80</item>
+        <item name="colorAccent">#FF9E80</item>
     </style>
 
 

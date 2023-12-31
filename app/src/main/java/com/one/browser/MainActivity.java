@@ -86,7 +86,6 @@ import com.one.browser.activity.SysCompassActivity;
 import com.one.browser.activity.SysEwmActivity;
 import com.one.browser.activity.SysFanActivity;
 import com.one.browser.activity.SysIdiomActivity;
-import com.one.browser.activity.SysImageColourActivity;
 import com.one.browser.activity.SysPhotoActivity;
 import com.one.browser.activity.SysRollLedActivity;
 import com.one.browser.activity.SysTPAsActivity;
@@ -494,12 +493,6 @@ public class MainActivity extends SysBaseActivity {
                 // 图片转黑白
                 case R.id.sys_black_and_white: {
                     Intent intent = new Intent(MainActivity.this, SysTphbActivity.class);
-                    startActivity(intent);
-                    break;
-                }
-                // 图片高清
-                case R.id.sys_repair: {
-                    Intent intent = new Intent(MainActivity.this, SysImageColourActivity.class);
                     startActivity(intent);
                     break;
                 }

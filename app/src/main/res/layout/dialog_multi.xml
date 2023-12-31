@@ -49,7 +49,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:contentDescription="@string/dialog_clear"
-                android:src="@drawable/spy_line"
+                android:src="@drawable/ic_spy_line"
                 tools:ignore="TouchTargetSizeCheck" />
 
             <View

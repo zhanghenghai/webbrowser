@@ -62,7 +62,7 @@
                             android:id="@+id/night_img"
                             android:layout_width="match_parent"
                             android:layout_height="23dp"
-                            android:src="@drawable/moon_line"
+                            android:src="@drawable/ic_more_moon_line"
                             app:tint="#676666"/>
 
                         <TextView
@@ -85,7 +85,7 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="23dp"
-                            android:src="@drawable/star_line"
+                            android:src="@drawable/ic_more_star_line"
                             app:tint="#676666"/>
 
                         <TextView
@@ -107,7 +107,7 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="23dp"
-                            android:src="@drawable/time_line"
+                            android:src="@drawable/ic_nv_time_line"
                             app:tint="#5C5A5A"/>
 
                         <TextView
@@ -151,7 +151,7 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="23dp"
-                            android:src="@drawable/terminal_fill"/>
+                            android:src="@drawable/ic_terminal_fill"/>
 
                         <TextView
                             android:layout_width="match_parent"
@@ -178,7 +178,7 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="23dp"
-                            android:src="@drawable/settings_3_line"
+                            android:src="@drawable/ic_more_settings_3_line"
                             app:tint="#676666"/>
 
                         <TextView
@@ -218,7 +218,7 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="23dp"
-                            android:src="@drawable/image_line"
+                            android:src="@drawable/ic_image_line"
                             app:tint="#676666"/>
 
                         <TextView
@@ -238,7 +238,7 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="23dp"
-                            android:src="@drawable/spy_line"
+                            android:src="@drawable/ic_spy_line"
                             app:tint="#676666"/>
 
                         <TextView
@@ -258,7 +258,7 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="23dp"
-                            android:src="@drawable/share_line"
+                            android:src="@drawable/ic_more_share_line"
                             app:tint="#676666"/>
 
                         <TextView
