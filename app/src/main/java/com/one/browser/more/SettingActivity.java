@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import com.one.browser.R;
 import com.one.browser.dialog.CustomEngineDialog;
 import com.one.browser.dialog.ListDialog;
+import com.one.browser.dialog.MultipleListDialog;
 
 import java.util.Objects;
 
@@ -22,6 +23,7 @@ public class SettingActivity extends AppCompatActivity {
     private LinearLayout settingSearch;
 
     private LinearLayout settingTopAil;
+    private LinearLayout settingClear;
     private SharedPreferences configure;
     public SharedPreferences.Editor editor;
     /**
@@ -50,6 +52,7 @@ public class SettingActivity extends AppCompatActivity {
     private void init() {
         settingSearch = findViewById(R.id.setting_search);
         settingTopAil = findViewById(R.id.setting_top_rail);
+        settingClear = findViewById(R.id.setting_data_clear);
         configure = this.getSharedPreferences("Config", MODE_PRIVATE);
         // 写入
         editor = configure.edit();
@@ -130,6 +133,41 @@ public class SettingActivity extends AppCompatActivity {
 
             });
             builder.create().show();
+        });
+        // 清楚数据
+        settingClear.setOnClickListener(v -> {
+            String[] items = {"浏览历史", "Cookies", "表单数据", "网页存储"};
+            MultipleListDialog.Builder builder = new MultipleListDialog.Builder(this, items);
+            builder.setOnClickListener(checkedPositions -> {
+                for (int i = 0; i < checkedPositions.size(); i++) {
+                    // 如果选择的位置为true 则就是选择了该元素
+                    if (checkedPositions.get(i)) {
+                        Log.i("TAG", "onClick: " + items[i]);
+                        if (i == 0) {
+                            // 清除历史记录
+                            editor.putString("History", "");
+                            editor.apply();
+                        } else if (i == 1) {
+                            // 清除缓存
+                            editor.putString("Cache", "");
+                            editor.apply();
+                        } else if (i == 2) {
+                            // 清除Cookie
+                            editor.putString("Cookie", "");
+                            editor.apply();
+                        } else {
+                            // 清除所有数据
+                            editor.putString("History", "");
+                            editor.putString("Cache", "");
+                            editor.putString("Cookie", "");
+                            editor.apply();
+                        }
+                    }
+                }
+            });
+
+            builder.create().show();
+
         });
     }
 

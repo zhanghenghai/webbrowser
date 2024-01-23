@@ -10,11 +10,8 @@ import android.widget.TextView;
 
 import com.one.browser.R;
 
+
 /**
- * 作者 Aaron Zhao
- * 时间 2015/9/16 11:21
- * 名称 CustomDialog.java 描述
- *
  * @author 18517
  */
 public class CertificateDialog extends Dialog {

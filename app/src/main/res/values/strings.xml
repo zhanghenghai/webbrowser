@@ -15,6 +15,7 @@
     <string name="search_certificate">搜索证件</string>
     <string name="certificate_name">输入证件照名称</string>
     <string name="BG_PATH_DEFAULT">image_matting/images/bg.jpg</string>
+    <string name="pull_to_refresh">下拉刷新</string>
 
     <style name="dialogTheme" parent="@android:style/Theme.Dialog">
         <item name="android:windowFrame">@null</item>
@@ -90,4 +91,6 @@
     <string name="image_size">图片质量：</string>
     <string name="save">保存</string>
     <string name="x">x</string>
+    <string name="multiple_cancel">取消</string>
+    <string name="multiple_confirm">确定</string>
 </resources>

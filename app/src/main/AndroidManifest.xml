@@ -117,7 +117,7 @@
         <activity
             android:name=".more.SettingActivity"
             android:label="软件设置"
-            android:theme="@style/Theme.one.NoActionBar" />
+            android:theme="@style/BaseTheme" />
         <activity
             android:name=".activity.SysFanActivity"
             android:exported="false"

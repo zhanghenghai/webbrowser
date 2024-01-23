@@ -1,0 +1,4 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#82B1FF"/> <!-- 选中时的背景颜色 -->
+    <corners android:radius="50dp"/> <!-- 圆角半径，设置为正方形宽度的一半 -->
+</shape>
