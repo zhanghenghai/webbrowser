@@ -5,16 +5,20 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.alibaba.fastjson.JSONObject;
 import com.one.browser.data.OkhttpData;
 import com.one.browser.utils.HttpUtil;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
@@ -30,10 +34,15 @@ public class TranslateUtil {
      * @param okhttpData
      */
     public String getMessage(String text, String old_language, String new_language, OkhttpData okhttpData) {
-        String url = HttpUtil.TRANSLATE+"text="+text+"&old_language="+old_language+"&new_language="+new_language;
+        String url = HttpUtil.TRANSLATE;
         Log.i("TAG", "网络请求 >>>>> "+url);
         OkHttpClient okHttpClient = new OkHttpClient.Builder().readTimeout(5, TimeUnit.SECONDS).build();
-        Request request = new Request.Builder().url(url).get().build();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("q", text);
+        jsonObject.put("from", old_language);
+        jsonObject.put("to", new_language);
+        RequestBody requestBody = RequestBody.create(jsonObject.toJSONString(), okhttp3.MediaType.parse("application/json; charset=utf-8"));
+        Request request = new Request.Builder().url(url).post(requestBody).build();
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override

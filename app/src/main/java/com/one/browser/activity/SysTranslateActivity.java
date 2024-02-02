@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -17,6 +15,7 @@ import androidx.appcompat.widget.ListPopupWindow;
 import androidx.appcompat.widget.Toolbar;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
@@ -26,7 +25,6 @@ import com.one.browser.R;
 import com.one.browser.http.TranslateUtil;
 import com.one.browser.onClick.itemOnClick;
 import com.one.browser.utils.HttpState;
-import com.one.browser.utils.HttpUtil;
 
 import java.util.Objects;
 
@@ -34,13 +32,13 @@ import java.util.Objects;
 /**
  * @author 18517
  */
-public class SysFanActivity extends AppCompatActivity {
+public class SysTranslateActivity extends AppCompatActivity {
 
     private MaterialButton button;
     private MaterialButton button1;
     private String name;
     private String left = "auto";
-    private String right = "en";
+    private String right = "zh";
     private ListPopupWindow listPopupWindow;
     private ListPopupWindow listPopupWindow1;
     private EditText editText;
@@ -52,7 +50,7 @@ public class SysFanActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fan);
+        setContentView(R.layout.activity_translate);
 
 
         ImmersionBar.with(this)
@@ -64,16 +62,11 @@ public class SysFanActivity extends AppCompatActivity {
                 .init();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("Google翻译");
+        toolbar.setTitle("翻译");
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
 
         ExtendedFloatingActionButton fab = findViewById(R.id.fab);
         editText = findViewById(R.id.editText);
@@ -84,9 +77,9 @@ public class SysFanActivity extends AppCompatActivity {
         card2 = findViewById(R.id.card2);
         tts = new TextToSpeech(getApplicationContext(), null);
 
-        listPopupWindow = new ListPopupWindow(SysFanActivity.this);
+        listPopupWindow = new ListPopupWindow(SysTranslateActivity.this);
         final String[] style = {"自动检测", "简体中文", "英语", "日语", "韩语", "法语", "俄语", "繁体中文"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(SysFanActivity.this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, style);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(SysTranslateActivity.this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, style);
         listPopupWindow.setAdapter(adapter);
         listPopupWindow.setAnchorView(button);
         listPopupWindow.setOnItemClickListener((parent, view, position, id) -> {
@@ -107,15 +100,15 @@ public class SysFanActivity extends AppCompatActivity {
                 button.setText("英语");
             }
             if (name.equals("日语")) {
-                left = "ja";
+                left = "jp";
                 button.setText("日语");
             }
             if (name.equals("韩语")) {
-                left = "ko";
+                left = "kor";
                 button.setText("韩语");
             }
             if (name.equals("法语")) {
-                left = "fr";
+                left = "fra";
                 button.setText("法语");
             }
             if (name.equals("俄语")) {
@@ -123,7 +116,7 @@ public class SysFanActivity extends AppCompatActivity {
                 button.setText("俄语");
             }
             if (name.equals("繁体中文")) {
-                left = "zh-tw";
+                left = "f";
                 button.setText("繁体中文");
             }
 
@@ -131,75 +124,82 @@ public class SysFanActivity extends AppCompatActivity {
 
         button.setOnClickListener(v -> listPopupWindow.show());
 
-        listPopupWindow1 = new ListPopupWindow(SysFanActivity.this);
+        listPopupWindow1 = new ListPopupWindow(SysTranslateActivity.this);
         final String[] style1 = {"简体中文", "英语", "日语", "韩语", "法语", "俄语", "繁体中文"};
-        ArrayAdapter<String> adapter1 = new ArrayAdapter<>(SysFanActivity.this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, style1);
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<>(SysTranslateActivity.this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, style1);
         listPopupWindow1.setAdapter(adapter1);
         listPopupWindow1.setAnchorView(button1);
-        listPopupWindow1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        listPopupWindow1.setOnItemClickListener((parent, view, position, id) -> {
 
-                listPopupWindow1.dismiss();
-                name = style1[position];
+            listPopupWindow1.dismiss();
+            name = style1[position];
 
-                if (name.equals("简体中文")) {
-                    right = "zh";
-                    button1.setText("简体中文");
-                }
-                if (name.equals("英语")) {
-                    right = "en";
-                    button1.setText("英语");
-                }
-                if (name.equals("日语")) {
-                    right = "ja";
-                    button1.setText("日语");
-                }
-                if (name.equals("韩语")) {
-                    right = "ko";
-                    button1.setText("韩语");
-                }
-                if (name.equals("法语")) {
-                    right = "fr";
-                    button1.setText("法语");
-                }
-                if (name.equals("俄语")) {
-                    right = "ru";
-                    button1.setText("俄语");
-                }
-                if (name.equals("繁体中文")) {
-                    right = "zh-tw";
-                    button1.setText("繁体中文");
-                }
-
+            if (name.equals("简体中文")) {
+                right = "zh";
+                button1.setText("简体中文");
             }
+            if (name.equals("英语")) {
+                right = "en";
+                button1.setText("英语");
+            }
+            if (name.equals("日语")) {
+                right = "jp";
+                button1.setText("日语");
+            }
+            if (name.equals("韩语")) {
+                right = "kor";
+                button1.setText("韩语");
+            }
+            if (name.equals("法语")) {
+                right = "fra";
+                button1.setText("法语");
+            }
+            if (name.equals("俄语")) {
+                right = "ru";
+                button1.setText("俄语");
+            }
+            if (name.equals("繁体中文")) {
+                right = "cht";
+                button1.setText("繁体中文");
+            }
+
         });
 
         button1.setOnClickListener(v -> listPopupWindow1.show());
 
         fab.setOnClickListener(view -> {
+
             if (TextUtils.isEmpty(editText.getText().toString())) {
                 Log.i("TAG", "日志输出 >>>>");
             } else {
                 Log.i("TAG", "left >>> " + left);
-                Log.i("TAG", "right >>>" + right);
+                Log.i("TAG", "right >>> " + right);
                 Log.i("TAG", "输入内容 >>>> " + editText.getText().toString());
                 itemOnClick.LoadingDialog(view.getContext());
-                new TranslateUtil().getMessage(editText.getText().toString(), left, right, result -> {
-                    Log.i("TAG", "onSuccess: >>> " + result);
-                    JSONObject jsonObject = JSON.parseObject(result);
-                    int code = jsonObject.getInteger("code");
-                    String targetText;
-                    if (code == HttpState.SUCCESS.getI()) {
 
-                        String tarData = jsonObject.getString("data");
-                        JSONObject dataObject = JSON.parseObject(tarData);
-                        targetText = dataObject.getString("TargetText");
-                        Log.i("TAG", "onSuccess: >>> " + targetText);
-                    } else {
-                        targetText = "翻译失败";
-                        Log.i("TAG", "onCreate: 翻译失败");
+                new TranslateUtil().getMessage(editText.getText().toString(), left, right, result -> {
+                    String targetText = "翻译失败";
+                    try {
+                        Log.i("TAG", "onSuccess: >>> " + result);
+                        JSONObject jsonObject = JSON.parseObject(result);
+                        int code = jsonObject.getInteger("code");
+
+                        if (code == HttpState.SUCCESS.getI()) {
+                            String tarData = jsonObject.getString("data");
+                            JSONObject dataObject = JSON.parseObject(tarData);
+                            String resultData = dataObject.getString("result");
+                            JSONObject resultObject = JSON.parseObject(resultData);
+                            JSONArray transResult = resultObject.getJSONArray("trans_result");
+                            JSONObject transObject = transResult.getJSONObject(0);
+                            targetText = transObject.getString("dst");
+                            Log.i("TAG", "onSuccess: >>> " + targetText);
+                        } else {
+                            Log.i("TAG", "onCreate: 翻译失败");
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+
                     textView.setText(targetText);
                     itemOnClick.loadDialog.dismiss();
                 });

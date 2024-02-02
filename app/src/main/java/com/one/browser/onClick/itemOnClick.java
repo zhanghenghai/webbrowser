@@ -39,8 +39,6 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 
 import com.one.browser.R;
-import com.one.browser.activity.SysEwmActivity;
-import com.one.browser.activity.SysIdiomActivity;
 import com.one.browser.utils.FileUtil;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.UCropActivity;

@@ -13,16 +13,6 @@
             android:background="@color/Transparent"
             android:title="翻译" />
         <item
-            android:id="@+id/sys_idiom"
-            android:icon="@drawable/font_color"
-            android:background="@color/Transparent"
-            android:title="成语查询" />
-        <item
-            android:id="@+id/sys_chinese"
-            android:icon="@drawable/book_line"
-            android:background="@color/Transparent"
-            android:title="汉字词典" />
-        <item
             android:id="@+id/sys_compass"
             android:icon="@drawable/ic_nv_compass_line"
             android:title="指南针" />

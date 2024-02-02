@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/backgroundColor"
-    tools:context="com.one.browser.activity.SysFanActivity">
+    tools:context="com.one.browser.activity.SysTranslateActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -54,12 +54,14 @@
                         android:layout_height="wrap_content"
                         android:background="#00000000"
                         android:gravity="top"
-                        android:hint="请输入内容"
+                        android:hint="@string/InputContent"
                         android:minLines="6"
                         android:padding="20dp"
                         android:textColor="@color/editTextColor"
                         android:textColorHint="@color/hui"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:autofillHints=""
+                        android:inputType="" />
 
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
@@ -96,8 +98,8 @@
                                     android:id="@+id/card1"
                                     android:layout_width="48dp"
                                     android:layout_height="48dp"
-                                    android:layout_alignParentRight="true"
-                                    android:layout_marginRight="8dp"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_marginEnd="8dp"
                                     android:layout_marginBottom="8dp"
                                     app:cardBackgroundColor="@color/itemBackColor"
                                     app:cardCornerRadius="24dp"
@@ -110,7 +112,8 @@
                                         android:padding="13dp"
                                         android:scaleType="fitCenter"
                                         app:srcCompat="@drawable/ic_twotone_content_copy_24"
-                                        app:tint="@color/fabColor" />
+                                        app:tint="@color/fabColor"
+                                        android:contentDescription="@string/onClickRecognition" />
                                 </com.google.android.material.card.MaterialCardView>
 
                                 <com.google.android.material.card.MaterialCardView
@@ -118,7 +121,7 @@
                                     android:layout_width="48dp"
                                     android:layout_height="48dp"
                                     android:layout_marginBottom="8dp"
-                                    android:layout_toLeftOf="@id/card1"
+                                    android:layout_toStartOf="@id/card1"
                                     app:cardBackgroundColor="@color/itemBackColor"
                                     app:cardCornerRadius="24dp"
                                     app:cardElevation="0dp">
@@ -130,7 +133,8 @@
                                         android:padding="12dp"
                                         android:scaleType="fitCenter"
                                         app:srcCompat="@drawable/ic_twotone_volume_up_24"
-                                        app:tint="@color/fabColor" />
+                                        app:tint="@color/fabColor"
+                                        android:contentDescription="@string/onClickVoice" />
                                 </com.google.android.material.card.MaterialCardView>
                             </RelativeLayout>
 
@@ -180,8 +184,8 @@
             android:paddingTop="8dp"
             android:paddingRight="16dp"
             android:paddingBottom="8dp"
-            android:text="自动检测"
-            android:textColor="@color/fabColor"
+            android:text="@string/automaticDetection"
+            android:textColor="@color/black"
             android:textStyle="normal"
             app:cornerRadius="18dp"
             app:rippleColor="@color/fabColor" />
@@ -205,8 +209,8 @@
             android:paddingTop="8dp"
             android:paddingRight="16dp"
             android:paddingBottom="8dp"
-            android:text="简体中文"
-            android:textColor="@color/fabColor"
+            android:text="@string/simplifiedChinese"
+            android:textColor="@color/black"
             android:textStyle="normal"
             app:cornerRadius="18dp"
             app:rippleColor="@color/fabColor" />
@@ -219,7 +223,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="0dp"
         android:minWidth="0dp"
-        android:text="翻译"
+        android:text="@string/translate"
         app:layout_anchor="@id/bottomAppBar"
         app:backgroundTint="@color/fabColor"
         app:icon="@drawable/ic_baseline_translate_24"

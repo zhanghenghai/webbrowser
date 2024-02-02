@@ -153,7 +153,11 @@
         <item name="backgroundTint">@color/material_dynamic_neutral10</item>
     </style>
 
-
+    <!-- 单独的MaterialButton样式 - - -> 警告色 -->
+    <style name="LoadingDialog" parent="@android:style/Theme.Holo.Dialog.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
 
 
 

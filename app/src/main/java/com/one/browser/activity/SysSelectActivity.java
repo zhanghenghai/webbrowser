@@ -23,7 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.one.browser.R;
 import com.one.browser.utils.FileUtil;
-import com.one.browser.utils.JurisdictionUtils;
+import com.one.browser.limits.JurisdictionUtils;
 
 
 /**

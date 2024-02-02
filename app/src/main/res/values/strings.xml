@@ -93,4 +93,13 @@
     <string name="x">x</string>
     <string name="multiple_cancel">取消</string>
     <string name="multiple_confirm">确定</string>
+    <string name="onClickRecognition">点击上传图片</string>
+    <string name="onClickVoice">点击声音</string>
+    <string name="Copytext">复制文字</string>
+    <string name="uploadpictures">上传图片</string>
+    <string name="InputContent">请输入内容</string>
+    <string name="automaticDetection">自动检测</string>
+    <string name="simplifiedChinese">简体中文</string>
+    <string name="translate">翻译</string>
+    <string name="Loading">数据加载中...</string>
 </resources>

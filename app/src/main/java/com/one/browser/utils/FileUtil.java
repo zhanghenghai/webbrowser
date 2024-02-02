@@ -646,4 +646,6 @@ public class FileUtil {
         File file = new File(context.getExternalFilesDir(Environment.DIRECTORY_DCIM).getAbsolutePath() + File.separator + fileName);
         return file;
     }
+
+
 }

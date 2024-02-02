@@ -1,28 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.one.browser"
     android:installLocation="auto">
 
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="false" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- 查看网络连接 -->
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- 查看WLAN连接 -->
-    <uses-permission android:name="android.permission.INTERNET" /> <!-- 拥有完全的网络访问权限 -->
+        android:required="false" /> <!-- 查看网络连接 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- 查看WLAN连接 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- 拥有完全的网络访问权限 -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- 请求读取外部存储的权限 -->
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32" />
+        android:maxSdkVersion="32" /> <!-- 修改或删除您共享存储空间中的内容 -->
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32" /> <!-- 修改或删除您共享存储空间中的内容 -->
-    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- 防止手机休眠 -->
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" /> <!-- 请求安装文件包 -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> <!-- 运行前台服务 -->
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" /> <!-- 显示通知 -->
-    <uses-permission android:name="android.permission.RECORD_AUDIO" /> <!-- 录音 -->
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" /> <!-- 更改您的音频设置 -->
-    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" /> <!-- 安装快捷方式 -->
+        android:maxSdkVersion="32" /> <!-- 防止手机休眠 -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- 请求安装文件包 -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" /> <!-- 运行前台服务 -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> <!-- 显示通知 -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" /> <!-- 录音 -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" /> <!-- 更改您的音频设置 -->
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" /> <!-- 安装快捷方式 -->
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" /> <!-- 请求摄像头权限 -->
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
@@ -40,10 +39,9 @@
         android:useEmbeddedDex="true"
         android:usesCleartextTraffic="true"
         tools:targetApi="33">
-
         <activity
             android:name=".MainActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout|uiMode"
             android:exported="true"
             android:hardwareAccelerated="true">
             <intent-filter>
@@ -89,6 +87,7 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -119,14 +118,9 @@
             android:label="软件设置"
             android:theme="@style/BaseTheme" />
         <activity
-            android:name=".activity.SysFanActivity"
+            android:name=".activity.SysTranslateActivity"
             android:exported="false"
             android:label="翻译页面"
-            android:theme="@style/Theme.one.NoActionBar" />
-        <activity
-            android:name=".activity.SysChineseActivity"
-            android:exported="false"
-            android:label="汉字词典"
             android:theme="@style/Theme.one.NoActionBar" />
         <activity
             android:name=".activity.SysPhotoActivity"
@@ -137,15 +131,13 @@
             android:name=".activity.SysSelectActivity"
             android:exported="false"
             android:label="图片选择页面"
-            android:theme="@style/Theme.one.NoActionBarFunction"
-            />
+            android:theme="@style/Theme.one.NoActionBarFunction" />
         <activity
             android:name=".activity.SysApplyActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
             android:hardwareAccelerated="true"
             android:label="渲染图片"
-            android:theme="@style/Theme.one.NoActionBarFunction"/>
-
+            android:theme="@style/Theme.one.NoActionBarFunction" />
         <activity
             android:name=".activity.SysClockActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
@@ -154,14 +146,9 @@
             android:screenOrientation="landscape"
             android:theme="@style/Theme.one.NoActionBar" />
         <activity
-            android:name=".activity.SysTPAsActivity"
+            android:name=".activity.SysGetColorActivity"
             android:exported="false"
             android:label="图片取色"
-            android:theme="@style/Theme.one.NoActionBar" />
-        <activity
-            android:name=".activity.SysIdiomActivity"
-            android:exported="false"
-            android:label="成语查询"
             android:theme="@style/Theme.one.NoActionBar" />
         <activity
             android:name=".activity.SysEwmActivity"
@@ -194,18 +181,23 @@
             android:label="指南针"
             android:theme="@style/Theme.one.NoActionBar" />
         <activity
+            android:name=".activity.SysRecognitionActivity"
+            android:exported="true"
+            android:label="文字识别"
+            android:theme="@style/Theme.one.NoActionBar"/>
+        <activity
             android:name=".activity.SysRollLedActivity"
             android:exported="false"
             android:label="滚动字幕制作"
             android:theme="@style/Theme.one.NoActionBar" />
-
         <activity
             android:name=".activity.SysLedActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
             android:hardwareAccelerated="true"
             android:label="滚动字幕显示"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.one.NoActionBar" />
+            android:theme="@style/Theme.one.NoActionBar" /> <!-- 通知类型下载器 -->
+        <service android:name=".service.DownloadService" />
 
         <meta-data
             android:name="android.max_aspect"

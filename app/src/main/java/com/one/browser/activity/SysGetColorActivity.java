@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.card.MaterialCardView;
 import com.gyf.immersionbar.ImmersionBar;
@@ -28,32 +29,34 @@ import com.one.browser.widget.SelectView;
 
 
 import java.util.ArrayList;
+import java.util.Objects;
 
-public class SysTPAsActivity extends AppCompatActivity {
+public class SysGetColorActivity extends AppCompatActivity {
 
     public final int REQ_CD_IMAGE = 101;
     private Intent image = new Intent(Intent.ACTION_GET_CONTENT);
+    private TextView sys_getcolor_tv;
     ImageView mimg;
     SelectView msv;
     MaterialCardView mLayout1;
     LinearLayout mLayout2;
-    TextView mtxtx,mtxty,mtxta,mtxtr,mtxtg,mtxtb,mtxtc;
+    TextView mtxtx, mtxty, mtxta, mtxtr, mtxtg, mtxtb, mtxtc;
     View mmenu;
     Bitmap mbitmap;
     MultiClick mck;
     Button suo;
-    private float screenW,screenH;//屏幕宽高
-    private float statusBarH=0f;//状态栏的高度
-    private String Pcpath="无";//图片路径
-    private String Pcname="无";//图片名称
+    private float screenW, screenH;//屏幕宽高
+    private float statusBarH = 0f;//状态栏的高度
+    private String Pcpath = "无";//图片路径
+    private String Pcname = "无";//图片名称
     private String Pcsize;//图片大小
     private boolean is = true;
 
     //图片缩放移动变量
-    static final int NONE=0;
-    static final int DRAG=1;//拖动中
-    static final int ZOOM=2;//缩放中
-    private int mode=NONE;//当前的事件
+    static final int NONE = 0;
+    static final int DRAG = 1;//拖动中
+    static final int ZOOM = 2;//缩放中
+    private int mode = NONE;//当前的事件
     private float scale;//缩放的比例 X Y方向都是这个值 越大缩放的越快
     private float beforeLenght;//两触点距离
     private float afterLenght;//两触点距离
@@ -70,65 +73,73 @@ public class SysTPAsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tpqs);
+        setContentView(R.layout.activity_sys_getcolor);
         ImmersionBar.with(this)
                 .fitsSystemWindows(true)
                 .statusBarColor(R.color.backgroundColor)
                 .navigationBarColor(R.color.appbarColor)
                 .autoDarkModeEnable(true)
                 .navigationBarDarkIcon(true)
-                //.keyboardEnable(true)
-                //.keyboardMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
                 .init();
 
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("图片取色");
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
+
         image.setType("image/*");
-        image.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true);
+        image.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         init();
+        sys_getcolor_tv.setOnClickListener(v -> {
+
+        });
     }
 
-    public void init(){
-        screenW=getWindowManager().getDefaultDisplay().getWidth();//屏幕宽（像素，如：480px）
-        screenH=getWindowManager().getDefaultDisplay().getHeight();//屏幕高（像素，如：800px）
-        //statusBarH=getStatusHeight(this);
-        mmenu=findViewById(R.id.mMenu1);
-        mimg=(ImageView)findViewById(R.id.mImageView1);
-        msv=(SelectView)findViewById(R.id.mImageView2);
-        mLayout1=(MaterialCardView)findViewById(R.id.mLayout1);
-        mLayout2=(LinearLayout)findViewById(R.id.mLayout2);
-        mtxtx=(TextView)findViewById(R.id.mTVx);
-        mtxty=(TextView)findViewById(R.id.mTVy);
-        mtxta=(TextView)findViewById(R.id.mTVa);
-        mtxtr=(TextView)findViewById(R.id.mTVr);
-        mtxtg=(TextView)findViewById(R.id.mTVg);
-        mtxtb=(TextView)findViewById(R.id.mTVb);
-        mtxtc=(TextView)findViewById(R.id.mTVc);
+    public void init() {
+        screenW = getWindowManager().getDefaultDisplay().getWidth();//屏幕宽（像素，如：480px）
+        screenH = getWindowManager().getDefaultDisplay().getHeight();//屏幕高（像素，如：800px）
+        sys_getcolor_tv = findViewById(R.id.sys_getcolor_tv);
+        mmenu = findViewById(R.id.mMenu1);
+        mimg = (ImageView) findViewById(R.id.mImageView1);
+        msv = (SelectView) findViewById(R.id.mImageView2);
+        mLayout1 = (MaterialCardView) findViewById(R.id.mLayout1);
+        mLayout2 = (LinearLayout) findViewById(R.id.mLayout2);
+        mtxtx = (TextView) findViewById(R.id.mTVx);
+        mtxty = (TextView) findViewById(R.id.mTVy);
+        mtxta = (TextView) findViewById(R.id.mTVa);
+        mtxtr = (TextView) findViewById(R.id.mTVr);
+        mtxtg = (TextView) findViewById(R.id.mTVg);
+        mtxtb = (TextView) findViewById(R.id.mTVb);
+        mtxtc = (TextView) findViewById(R.id.mTVc);
         suo = findViewById(R.id.suo);
 
-        start_Point=new PointF();
-        mid_Point=new PointF();
-        matrix=new Matrix();//注意，这里是3个实例
-        savedMat=new Matrix();//不是一个
-        originalMat=new Matrix();//否则只是一个实例，而名字不同罢了
-        down_Point=new PointF();
-        img_Point=new PointF();
+        start_Point = new PointF();
+        mid_Point = new PointF();
+        matrix = new Matrix();//注意，这里是3个实例
+        savedMat = new Matrix();//不是一个
+        originalMat = new Matrix();//否则只是一个实例，而名字不同罢了
+        down_Point = new PointF();
+        img_Point = new PointF();
         msv.setVisibility(View.GONE);
         mimg.setImageBitmap(null);
         mtxtr.setText("请选择图片");
-        mck=new MultiClick(){
+        mck = new MultiClick() {
             @Override
-            protected void onClick()
-            {
+            protected void onClick() {
                 setImgFitCenter();
             }
         };
     }
 
-    public void choose(View v){
+    public void choose(View v) {
         startActivityForResult(image, REQ_CD_IMAGE);
     }
 
-    public void suo(View v){
-        if (is){
+    public void suo(View v) {
+        if (is) {
             is = false;
             mLayout1.setVisibility(View.GONE);
             msv.setVisibility(View.GONE);
@@ -141,7 +152,7 @@ public class SysTPAsActivity extends AppCompatActivity {
         }
     }
 
-    public void copy(View v){
+    public void copy(View v) {
         ((ClipboardManager) this.getSystemService(CLIPBOARD_SERVICE)).setPrimaryClip(ClipData.newPlainText("clipboard", mtxtr.getText().toString()));
 //        Alerter.create((Activity) this)
 //                .setTitle("复制成功")
@@ -151,13 +162,13 @@ public class SysTPAsActivity extends AppCompatActivity {
     }
 
     public void setImgFitCenter() {
-        float bitH=mbitmap.getHeight(),
-                bitW=mbitmap.getWidth();
-        scale=bitW/bitH<screenW/(screenH-statusBarH)?
-                (screenH-statusBarH)/bitH:screenW/bitW;
+        float bitH = mbitmap.getHeight(),
+                bitW = mbitmap.getWidth();
+        scale = bitW / bitH < screenW / (screenH - statusBarH) ?
+                (screenH - statusBarH) / bitH : screenW / bitW;
         matrix.set(originalMat);
-        matrix.postTranslate((screenW-bitW)/2,(screenH-statusBarH-bitH)/2);
-        matrix.postScale(scale,scale,screenW/2,(screenH-statusBarH)/2);
+        matrix.postTranslate((screenW - bitW) / 2, (screenH - statusBarH - bitH) / 2);
+        matrix.postScale(scale, scale, screenW / 2, (screenH - statusBarH) / 2);
         mimg.setImageMatrix(matrix);
     }
 
@@ -176,35 +187,35 @@ public class SysTPAsActivity extends AppCompatActivity {
 //        return i1;
 //    }
 
-    int a,r,g,b,tc;
-    public void setLayoutPosition(int zx,int zy,int w,int h) {
-        zx+= itemOnClick.dp2px(this,16);zy-= itemOnClick.dp2px(this,16);
-        if(zx>screenW/2) {
-            zx-=mLayout1.getWidth()+ itemOnClick.dp2px(this,32);
+    int a, r, g, b, tc;
+
+    public void setLayoutPosition(int zx, int zy, int w, int h) {
+        zx += itemOnClick.dp2px(this, 16);
+        zy -= itemOnClick.dp2px(this, 16);
+        if (zx > screenW / 2) {
+            zx -= mLayout1.getWidth() + itemOnClick.dp2px(this, 32);
         }
-        if(zy<(screenH-statusBarH)/2) {
-            zy+=mLayout1.getHeight()+ itemOnClick.dp2px(this,32);
+        if (zy < (screenH - statusBarH) / 2) {
+            zy += mLayout1.getHeight() + itemOnClick.dp2px(this, 32);
         }
-        mLayout1.layout(zx,zy-mLayout1.getHeight(),zx+mLayout1.getWidth(),zy);
-        if(w>=0&&w<mbitmap.getWidth()
-                &&h>=0&&h<mbitmap.getHeight())
-        {
-            int pixelColor=mbitmap.getPixel(w,h);
-            a=Color.alpha(pixelColor);
-            r=Color.red(pixelColor);
-            g=Color.green(pixelColor);
-            b=Color.blue(pixelColor);
-            mtxtx.setText("x="+(w+1));
-            mtxty.setText("y="+(h+1));
-            mtxta.setText("A="+a);
-            mtxtc.setText("R="+r);
-            mtxtg.setText("G="+g);
-            mtxtb.setText("B="+b);
-            mtxtr.setText("#"+getHexC(a,r,g,b).toUpperCase());
-            setTextColor(r,g,b);
+        mLayout1.layout(zx, zy - mLayout1.getHeight(), zx + mLayout1.getWidth(), zy);
+        if (w >= 0 && w < mbitmap.getWidth()
+                && h >= 0 && h < mbitmap.getHeight()) {
+            int pixelColor = mbitmap.getPixel(w, h);
+            a = Color.alpha(pixelColor);
+            r = Color.red(pixelColor);
+            g = Color.green(pixelColor);
+            b = Color.blue(pixelColor);
+            mtxtx.setText("x=" + (w + 1));
+            mtxty.setText("y=" + (h + 1));
+            mtxta.setText("A=" + a);
+            mtxtc.setText("R=" + r);
+            mtxtg.setText("G=" + g);
+            mtxtb.setText("B=" + b);
+            mtxtr.setText("#" + getHexC(a, r, g, b).toUpperCase());
+            setTextColor(r, g, b);
             //mLayout2.setBackgroundColor(pixelColor);
-        }else
-        {
+        } else {
             mtxtx.setText("");
             mtxty.setText("");
             mtxta.setText("");
@@ -215,7 +226,7 @@ public class SysTPAsActivity extends AppCompatActivity {
         }
     }
 
-    private String getHexC(int a,int r,int g,int b) {
+    private String getHexC(int a, int r, int g, int b) {
         /***
          String s=Integer.toHexString(b);
          if(s.length()==1)
@@ -230,32 +241,37 @@ public class SysTPAsActivity extends AppCompatActivity {
          if(s.length()==7)
          s="0"+s;
          /***/
-        String s="";
-        int i1=0;
-        for(int i=0;i<4;i++)
-        {
-            switch(i)
-            {
-                case 0:i1=b;break;
-                case 1:i1=g;break;
-                case 2:i1=r;break;
-                case 3:i1=a;break;
+        String s = "";
+        int i1 = 0;
+        for (int i = 0; i < 4; i++) {
+            switch (i) {
+                case 0:
+                    i1 = b;
+                    break;
+                case 1:
+                    i1 = g;
+                    break;
+                case 2:
+                    i1 = r;
+                    break;
+                case 3:
+                    i1 = a;
+                    break;
             }
-            s=Integer.toHexString(i1)+s;
-            if(s.length()%2!=0) {
-                s="0"+s;
+            s = Integer.toHexString(i1) + s;
+            if (s.length() % 2 != 0) {
+                s = "0" + s;
             }
         }
         return s;
 
     }
 
-    private void setTextColor(int r,int g,int b) {
+    private void setTextColor(int r, int g, int b) {
         //if(r>102&&r<153)r=0;
         //if(g>102&&g<153)g=0;
         //if(b>102&&b<153)b=0;
-        if(b*0.114+g*0.578+r*0.229>191)
-        {
+        if (b * 0.114 + g * 0.578 + r * 0.229 > 191) {
             mtxtc.setTextColor(Color.parseColor("#000000"));
             mtxtx.setTextColor(Color.parseColor("#000000"));
             mtxty.setTextColor(Color.parseColor("#000000"));
@@ -264,11 +280,9 @@ public class SysTPAsActivity extends AppCompatActivity {
             mtxtg.setTextColor(Color.parseColor("#000000"));
             mtxtb.setTextColor(Color.parseColor("#000000"));
             mLayout1.setStrokeColor(Color.parseColor("#000000"));
-            mLayout1.setCardBackgroundColor(Color.rgb(r,g,b));
-            msv.setLineaColor(0,0,0);
-        }
-        else
-        {
+            mLayout1.setCardBackgroundColor(Color.rgb(r, g, b));
+            msv.setLineaColor(0, 0, 0);
+        } else {
             mtxtc.setTextColor(Color.parseColor("#FFFFFF"));
             mtxtx.setTextColor(Color.parseColor("#FFFFFF"));
             mtxty.setTextColor(Color.parseColor("#FFFFFF"));
@@ -278,20 +292,19 @@ public class SysTPAsActivity extends AppCompatActivity {
             mtxtb.setTextColor(Color.parseColor("#FFFFFF"));
 
             mLayout1.setStrokeColor(Color.parseColor("#FFFFFF"));
-            mLayout1.setCardBackgroundColor(Color.rgb(r,g,b));
-            msv.setLineaColor(255,255,255);
+            mLayout1.setCardBackgroundColor(Color.rgb(r, g, b));
+            msv.setLineaColor(255, 255, 255);
         }
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if(mbitmap == null){
+        if (mbitmap == null) {
             mtxtr.setText("请选择图片");
-        }else{
-            if(is) {
+        } else {
+            if (is) {
                 onSelectMove(event);
-            }
-            else{
+            } else {
                 moveArate(event);
             }
         }
@@ -307,79 +320,74 @@ public class SysTPAsActivity extends AppCompatActivity {
         }
         else
         {*/
-            msv.setVisibility(View.VISIBLE);
-            switch(me.getAction())
-            {
-                case MotionEvent.ACTION_DOWN:
-                    down_Point.set(me.getX(),me.getY());
-                    break;
-                case MotionEvent.ACTION_UP:
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    msv.postPosition(me.getX()-down_Point.x,me.getY()-down_Point.y);
-                    down_Point.set(me.getX(),me.getY());
-                    break;
-            }
+        msv.setVisibility(View.VISIBLE);
+        switch (me.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                down_Point.set(me.getX(), me.getY());
+                break;
+            case MotionEvent.ACTION_UP:
+                break;
+            case MotionEvent.ACTION_MOVE:
+                msv.postPosition(me.getX() - down_Point.x, me.getY() - down_Point.y);
+                down_Point.set(me.getX(), me.getY());
+                break;
+        }
         //}
-        float[]f1=new float[9];
+        float[] f1 = new float[9];
         //这个f1的值是相对初始的bitmap的
         matrix.getValues(f1);
         //当前触点在位图上的坐标=(十字架坐标-图片坐标)/缩放比例
-        img_Point.set((msv.get_x()-f1[2])/f1[0],(msv.get_y()-f1[5])/f1[0]);
-        setLayoutPosition((int)msv.get_x(),(int)msv.get_y(),(int)img_Point.x,(int)img_Point.y);
+        img_Point.set((msv.get_x() - f1[2]) / f1[0], (msv.get_y() - f1[5]) / f1[0]);
+        setLayoutPosition((int) msv.get_x(), (int) msv.get_y(), (int) img_Point.x, (int) img_Point.y);
     }
 
     //对图片的移动和缩放处理
     public void moveArate(MotionEvent me) {
-        switch(me.getAction()&MotionEvent.ACTION_MASK)
-        {
+        switch (me.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
-                if(mck.onMultiClick()) {
+                if (mck.onMultiClick()) {
                     break;
                 }
-                mode=DRAG;
+                mode = DRAG;
                 savedMat.set(mimg.getImageMatrix());
-                start_Point.set(me.getX(),me.getY());
+                start_Point.set(me.getX(), me.getY());
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:
-                if(me.getPointerCount()==2&&spacing(me)>10f)
-                {
-                    mode=ZOOM;
+                if (me.getPointerCount() == 2 && spacing(me) > 10f) {
+                    mode = ZOOM;
                     savedMat.set(mimg.getImageMatrix());
-                    beforeLenght=spacing(me);
-                    mid_Point.set((me.getX(1)+me.getX(0))/2,
-                            (me.getY(1)+me.getY(0))/2);
+                    beforeLenght = spacing(me);
+                    mid_Point.set((me.getX(1) + me.getX(0)) / 2,
+                            (me.getY(1) + me.getY(0)) / 2);
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                mode=NONE;
+                mode = NONE;
                 break;
             case MotionEvent.ACTION_POINTER_UP:
-                mode=NONE;
+                mode = NONE;
                 break;
             case MotionEvent.ACTION_MOVE:
                 //处理拖动
-                if(mode==DRAG)
-                {
+                if (mode == DRAG) {
                     //在当前基础上移动
                     matrix.set(savedMat);
                     matrix.postTranslate(
-                            me.getX()-start_Point.x,
-                            me.getY()-start_Point.y);
+                            me.getX() - start_Point.x,
+                            me.getY() - start_Point.y);
                 }//处理缩放
-                else if(mode==ZOOM&&me.getPointerCount()==2
-                        &&(afterLenght=spacing(me))>10f)
-                {
-                    scale=afterLenght/beforeLenght;
+                else if (mode == ZOOM && me.getPointerCount() == 2
+                        && (afterLenght = spacing(me)) > 10f) {
+                    scale = afterLenght / beforeLenght;
                     matrix.set(savedMat);
-                    float[]p=new float[9];
+                    float[] p = new float[9];
                     matrix.getValues(p);
-                    if((p[0]<0.25f&&scale<1f)
-                            ||(p[0]>4f&&scale>1f)) {
-                        scale=1f;
+                    if ((p[0] < 0.25f && scale < 1f)
+                            || (p[0] > 4f && scale > 1f)) {
+                        scale = 1f;
                     }
-                    matrix.postScale(scale,scale,
-                            mid_Point.x,mid_Point.y-statusBarH);
+                    matrix.postScale(scale, scale,
+                            mid_Point.x, mid_Point.y - statusBarH);
                 }
                 break;
         }
@@ -389,9 +397,9 @@ public class SysTPAsActivity extends AppCompatActivity {
 
     //算两点间的距离
     public float spacing(MotionEvent me) {
-        float x=me.getX(0)-me.getX(1);
-        float y=me.getY(0)-me.getY(1);
-        return (float)Math.sqrt(x*x+y*y);
+        float x = me.getX(0) - me.getX(1);
+        float y = me.getY(0) - me.getY(1);
+        return (float) Math.sqrt(x * x + y * y);
     }
 
     @Override
@@ -408,8 +416,7 @@ public class SysTPAsActivity extends AppCompatActivity {
                                 ClipData.Item _item = _data.getClipData().getItemAt(_index);
                                 _filePath.add(FileUtil.convertUriToFilePath(getApplicationContext(), _item.getUri()));
                             }
-                        }
-                        else {
+                        } else {
                             _filePath.add(FileUtil.convertUriToFilePath(getApplicationContext(), _data.getData()));
                         }
                     }

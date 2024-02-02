@@ -16,8 +16,11 @@ public class HttpUtil {
     /**
      * 翻译接口
      */
-    public static final String TRANSLATE = "http://192.168.8.100:8080/api/translate?";
-
+    public static final String TRANSLATE = "https://2r242698s2.zicp.fun/api/getBaiduTranslate";
+    /**
+     * 文字识别
+     */
+    public static final String RECOGNITION = "https://2r242698s2.zicp.fun/api/getBaiduRecognition";
     /**
      * 成语接口
      */
