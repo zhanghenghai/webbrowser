@@ -75,6 +75,8 @@ import com.alibaba.fastjson.TypeReference;
 import com.google.android.material.internal.NavigationMenuView;
 import com.kymjs.rxvolley.RxVolley;
 import com.kymjs.rxvolley.client.HttpCallback;
+import com.one.browser.activity.SysCartoonActivity;
+import com.one.browser.activity.SysImageGetColorActivity;
 import com.one.browser.activity.SysRecognitionActivity;
 import com.one.browser.activity.SysBase64Activity;
 import com.one.browser.activity.SysBaseActivity;
@@ -458,7 +460,7 @@ public class MainActivity extends SysBaseActivity {
                 }
                 // 图片取色
                 case R.id.sys_colorPicker: {
-                    Intent intent = new Intent(MainActivity.this, SysGetColorActivity.class);
+                    Intent intent = new Intent(MainActivity.this, SysImageGetColorActivity.class);
                     startActivity(intent);
                     break;
                 }
@@ -498,8 +500,12 @@ public class MainActivity extends SysBaseActivity {
                     startActivity(intent);
                     break;
                 }
-
-
+                // 图片动漫
+                case R.id.sys_cartoon: {
+                    Intent intent = new Intent(MainActivity.this, SysCartoonActivity.class);
+                    startActivity(intent);
+                    break;
+                }
             }
             return true;
         });

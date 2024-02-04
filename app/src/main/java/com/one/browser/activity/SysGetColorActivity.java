@@ -1,6 +1,5 @@
 package com.one.browser.activity;
 
-import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
@@ -8,30 +7,38 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.PointF;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.card.MaterialCardView;
 import com.gyf.immersionbar.ImmersionBar;
 import com.one.browser.R;
+import com.one.browser.limits.JurisdictionUtils;
 import com.one.browser.onClick.itemOnClick;
 import com.one.browser.utils.FileUtil;
 import com.one.browser.widget.MultiClick;
 import com.one.browser.widget.SelectView;
 
-
-import java.util.ArrayList;
 import java.util.Objects;
 
 public class SysGetColorActivity extends AppCompatActivity {
+
 
     public final int REQ_CD_IMAGE = 101;
     private Intent image = new Intent(Intent.ACTION_GET_CONTENT);
@@ -66,9 +73,50 @@ public class SysGetColorActivity extends AppCompatActivity {
     private PointF start_Point;//开始点击的触点
     private PointF mid_Point;//记录两触点的中点
 
-    //SelectView变量
-    private PointF down_Point;//开始点击的触点
-    private PointF img_Point;//图片上的触点
+    /**
+     * 开始点击的触点
+     */
+    private PointF down_Point;
+    /**
+     * 图片上的触点
+     */
+    private PointF img_Point;
+    private LinearLayoutCompat sys_getcolor_ll;
+    private RelativeLayout sys_getcolor_rl;
+
+    ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
+            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+                // Callback is invoked after the user selects a media item or closes the
+                // photo picker.
+                if (uri != null) {
+                    Log.i("PhotoPicker", "Selected URI: " + uri);
+                    sys_getcolor_ll.setVisibility(View.GONE);
+                    sys_getcolor_rl.setVisibility(View.VISIBLE);
+                    mbitmap = FileUtil.decodeSampleBitmapFromPath(FileUtil.convertUriToFilePath(getApplicationContext(), uri), 1024, 1024);
+                    mimg.setImageBitmap(mbitmap);
+                    originalMat.set(mimg.getImageMatrix());
+                    //setImgFitCenter();
+                }
+            });
+
+    ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
+            uri -> {
+                // 处理获取到的图片URI
+                if (uri != null) {
+                    // 使用图片URI
+                    Log.i("TAG", "获取到的图片URI: " + uri);
+                    sys_getcolor_ll.setVisibility(View.GONE);
+                    sys_getcolor_rl.setVisibility(View.VISIBLE);
+                    mbitmap = FileUtil.decodeSampleBitmapFromPath(FileUtil.convertUriToFilePath(getApplicationContext(), uri), 1024, 1024);
+                    mimg.setImageBitmap(mbitmap);
+                    originalMat.set(mimg.getImageMatrix());
+                    //setImgFitCenter();
+                }
+            });
+
+    public SysGetColorActivity() {
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,27 +141,63 @@ public class SysGetColorActivity extends AppCompatActivity {
         image.setType("image/*");
         image.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         init();
-        sys_getcolor_tv.setOnClickListener(v -> {
+        event();
 
+    }
+
+    private void event() {
+
+        // 图片移动
+        mimg.setOnTouchListener((v, event) -> {
+
+            if (is) {
+                onSelectMove(event);
+                Log.i("TAG", "onTouchEvent: onSelectMove 触发 >>>>");
+            } else {
+                moveArate(event);
+                Log.i("TAG", "onTouchEvent: moveArate 触发 >>>>");
+            }
+
+
+            return true;
         });
+
+        // 图片选择
+        sys_getcolor_tv.setOnClickListener(v -> {
+            // 进行图片选择
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                pickMedia.launch(new PickVisualMediaRequest.Builder()
+                        .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                        .build());
+            } else {
+                if (JurisdictionUtils.photoPermissions(SysGetColorActivity.this)) {
+                    // 如果已授予照片权限，创建一个 Intent 用于选择照片
+                    image.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                    mGetContent.launch("image/*");
+                }
+            }
+        });
+
     }
 
     public void init() {
+        sys_getcolor_ll = findViewById(R.id.sys_getcolor_ll);
+        sys_getcolor_rl = findViewById(R.id.mRelativeLayout1);
         screenW = getWindowManager().getDefaultDisplay().getWidth();//屏幕宽（像素，如：480px）
         screenH = getWindowManager().getDefaultDisplay().getHeight();//屏幕高（像素，如：800px）
         sys_getcolor_tv = findViewById(R.id.sys_getcolor_tv);
         mmenu = findViewById(R.id.mMenu1);
-        mimg = (ImageView) findViewById(R.id.mImageView1);
-        msv = (SelectView) findViewById(R.id.mImageView2);
-        mLayout1 = (MaterialCardView) findViewById(R.id.mLayout1);
-        mLayout2 = (LinearLayout) findViewById(R.id.mLayout2);
-        mtxtx = (TextView) findViewById(R.id.mTVx);
-        mtxty = (TextView) findViewById(R.id.mTVy);
-        mtxta = (TextView) findViewById(R.id.mTVa);
-        mtxtr = (TextView) findViewById(R.id.mTVr);
-        mtxtg = (TextView) findViewById(R.id.mTVg);
-        mtxtb = (TextView) findViewById(R.id.mTVb);
-        mtxtc = (TextView) findViewById(R.id.mTVc);
+        mimg = findViewById(R.id.mImageView1);
+        msv = findViewById(R.id.mImageView2);
+        mLayout1 = findViewById(R.id.mLayout1);
+        mLayout2 = findViewById(R.id.mLayout2);
+        mtxtx = findViewById(R.id.mTVx);
+        mtxty = findViewById(R.id.mTVy);
+        mtxta = findViewById(R.id.mTVa);
+        mtxtr = findViewById(R.id.mTVr);
+        mtxtg = findViewById(R.id.mTVg);
+        mtxtb = findViewById(R.id.mTVb);
+        mtxtc = findViewById(R.id.mTVc);
         suo = findViewById(R.id.suo);
 
         start_Point = new PointF();
@@ -126,12 +210,12 @@ public class SysGetColorActivity extends AppCompatActivity {
         msv.setVisibility(View.GONE);
         mimg.setImageBitmap(null);
         mtxtr.setText("请选择图片");
-        mck = new MultiClick() {
-            @Override
-            protected void onClick() {
-                setImgFitCenter();
-            }
-        };
+//        mck = new MultiClick() {
+//            @Override
+//            protected void onClick() {
+//                setImgFitCenter();
+//            }
+//        };
     }
 
     public void choose(View v) {
@@ -297,29 +381,28 @@ public class SysGetColorActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (mbitmap == null) {
-            mtxtr.setText("请选择图片");
-        } else {
-            if (is) {
-                onSelectMove(event);
-            } else {
-                moveArate(event);
-            }
-        }
-
-        return true;
-    }
+    // 触发图片选择
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event) {
+//        if (mbitmap == null) {
+//            mtxtr.setText("请选择图片");
+//        } else {
+//            if (is) {
+//                onSelectMove(event);
+//                Log.i("TAG", "onTouchEvent: onSelectMove 触发 >>>>");
+//            } else {
+//                moveArate(event);
+//                Log.i("TAG", "onTouchEvent: moveArate 触发 >>>>");
+//            }
+//        }
+//
+//        return true;
+//    }
 
     //对SelectView的移动
     public void onSelectMove(MotionEvent me) {
-        /*if(is){
-            msv.setVisibility(View.VISIBLE);
-            msv.setPosition(me.getX(),me.getY()-statusBarH);
-        }
-        else
-        {*/
+
+        // 移动光标
         msv.setVisibility(View.VISIBLE);
         switch (me.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -328,6 +411,8 @@ public class SysGetColorActivity extends AppCompatActivity {
             case MotionEvent.ACTION_UP:
                 break;
             case MotionEvent.ACTION_MOVE:
+                Log.i("TAG", "onSelectMove: down_Point.x = " + down_Point.x + " down_Point.y = " + down_Point.y);
+                Log.i("TAG", "onSelectMove: " + me.getX() + " " + me.getY());
                 msv.postPosition(me.getX() - down_Point.x, me.getY() - down_Point.y);
                 down_Point.set(me.getX(), me.getY());
                 break;
@@ -402,33 +487,5 @@ public class SysGetColorActivity extends AppCompatActivity {
         return (float) Math.sqrt(x * x + y * y);
     }
 
-    @Override
-    protected void onActivityResult(int _requestCode, int _resultCode, Intent _data) {
-        super.onActivityResult(_requestCode, _resultCode, _data);
-
-        switch (_requestCode) {
-            case REQ_CD_IMAGE:
-                if (_resultCode == Activity.RESULT_OK) {
-                    ArrayList<String> _filePath = new ArrayList<>();
-                    if (_data != null) {
-                        if (_data.getClipData() != null) {
-                            for (int _index = 0; _index < _data.getClipData().getItemCount(); _index++) {
-                                ClipData.Item _item = _data.getClipData().getItemAt(_index);
-                                _filePath.add(FileUtil.convertUriToFilePath(getApplicationContext(), _item.getUri()));
-                            }
-                        } else {
-                            _filePath.add(FileUtil.convertUriToFilePath(getApplicationContext(), _data.getData()));
-                        }
-                    }
-                    mbitmap = FileUtil.decodeSampleBitmapFromPath(_filePath.get(0), 1024, 1024);
-                    mimg.setImageBitmap(mbitmap);
-                    originalMat.set(mimg.getImageMatrix());
-                    setImgFitCenter();
-                }
-                break;
-            default:
-                break;
-        }
-    }
 
 }

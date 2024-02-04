@@ -156,7 +156,7 @@ public class SysRecognitionActivity extends AppCompatActivity {
         sysRecognitionImageView = findViewById(R.id.sys_recognition_imageView);
         sysRecognitionResultTextView = findViewById(R.id.sys_recognition_textView);
         sysRecognitionResultLinearLayoutCompat = findViewById(R.id.sys_recognition_layout);
-        loadingDialog = new LoadingDialog(this, "正在识别", R.drawable.ic_home_loader_line);
+        loadingDialog = new LoadingDialog( this, R.drawable.ic_home_loader_line);
         materialCardView = findViewById(R.id.sys_recognition_cardView);
     }
 
@@ -167,6 +167,7 @@ public class SysRecognitionActivity extends AppCompatActivity {
     private void networkRequest(String path) throws IOException {
 
         // 启动等待弹窗
+        loadingDialog.setMessage("正在识别中...", R.drawable.ic_home_loader_line);
         loadingDialog.show();
         disposable = Observable.fromCallable(() -> {
                     OkHttpClient client = new OkHttpClient.Builder().readTimeout(20, TimeUnit.SECONDS).build();

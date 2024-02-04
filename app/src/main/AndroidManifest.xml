@@ -184,7 +184,17 @@
             android:name=".activity.SysRecognitionActivity"
             android:exported="true"
             android:label="文字识别"
-            android:theme="@style/Theme.one.NoActionBar"/>
+            android:theme="@style/Theme.one.NoActionBar" />
+        <activity
+            android:name=".activity.SysImageGetColorActivity"
+            android:exported="false"
+            android:label="图片取色"
+            android:theme="@style/Theme.one.NoActionBar" />
+        <activity
+            android:name=".activity.SysCartoonActivity"
+            android:exported="false"
+            android:label="图片动漫"
+            android:theme="@style/Theme.one.NoActionBar" />
         <activity
             android:name=".activity.SysRollLedActivity"
             android:exported="false"

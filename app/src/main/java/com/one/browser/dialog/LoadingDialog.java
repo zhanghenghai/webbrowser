@@ -3,6 +3,7 @@ package com.one.browser.dialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
@@ -19,22 +20,23 @@ import com.one.browser.R;
  */
 public class LoadingDialog extends Dialog {
 
-    private static final String TAG = "LoadingDialog";
+    private TextView tv_loading;
+    private ImageView iv_loading;
 
+    private static final String TAG = "LoadingDialog";
     private Context mContext;
     private String mMessage;
     private int mImageId;
     private boolean mCancelable;
     private RotateAnimation mRotateAnimation;
 
-    public LoadingDialog(@NonNull Context context, String message, int imageId) {
-        this(context, R.style.LoadingDialog, message, imageId, false);
+    public LoadingDialog(@NonNull Context context, int imageId) {
+        this(context, R.style.LoadingDialog, imageId, false);
     }
 
-    public LoadingDialog(@NonNull Context context, int themeResId, String message, int imageId, boolean cancelable) {
+    public LoadingDialog(@NonNull Context context, int themeResId, int imageId, boolean cancelable) {
         super(context, themeResId);
         this.mContext = context;
-        this.mMessage = message;
         this.mImageId = imageId;
         this.mCancelable = cancelable;
     }
@@ -57,10 +59,11 @@ public class LoadingDialog extends Dialog {
         attributes.width = screenWidth / 3;
         attributes.height = attributes.width;
         getWindow().setAttributes(attributes);
+        // 是否可以可以取消
         setCancelable(mCancelable);
 
-        TextView tv_loading = findViewById(R.id.tv_loading);
-        ImageView iv_loading = findViewById(R.id.iv_loading);
+        tv_loading = findViewById(R.id.tv_loading);
+        iv_loading = findViewById(R.id.iv_loading);
         tv_loading.setText(mMessage);
         iv_loading.setImageResource(mImageId);
         // 先对imageView进行测量，以便拿到它的宽高（否则getMeasuredWidth为0）
@@ -71,19 +74,31 @@ public class LoadingDialog extends Dialog {
         mRotateAnimation.setDuration(1000);
         mRotateAnimation.setRepeatCount(-1);
         iv_loading.startAnimation(mRotateAnimation);
+        Log.i(TAG, "initView: ");
     }
 
     /**
-     * 重写取消事件
+     * 设置提示文字和图片
+     */
+    public void setMessage(String message, int imageId) {
+        // 显示文字
+        this.mMessage = message;
+        // 显示图片
+        this.mImageId = imageId;
+    }
+
+
+
+
+
+    /**
+     * 返回
      */
     @Override
-    public void dismiss() {
-        // 取消动画
-        if (mRotateAnimation != null) {
-            mRotateAnimation.cancel();
+    public void onBackPressed() {
+        if (mCancelable) {
+            super.onBackPressed();
         }
-        super.dismiss();
-
     }
 }
 
