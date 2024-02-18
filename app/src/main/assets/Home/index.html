@@ -2,109 +2,99 @@
 <html>
 
 <head>
-  <meta charset="UTF-8">
-  <title>Swiper Demo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <link rel="stylesheet" href="css/swiper-bundle.min.css" />
-  <link rel="stylesheet" href="css/main.css" />
+    <meta charset="UTF-8">
+    <title>Swiper Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"/>
+    <link rel="stylesheet" href="css/swiper-bundle.min.css"/>
+    <link rel="stylesheet" href="css/main.css"/>
+
 </head>
 
 <body>
-  <div class="swiper-container">
+<div class="swiper-container">
     <!-- Swiper 插件中的一个类名 -->
     <div class="swiper-wrapper" id="sw">
-      <div class="swiper-slide">
-        <!-- 父级页面 -->
-        <div style="width: 100%;height: 100%;position: relative;display: flex;flex-direction: column;">
-          <!-- 主要内容 -->
-          <div style="flex: 1;">
-            <div
-              style="background: linear-gradient(to right bottom,#ff6666,#ff7e7e);width: 50%;height: 130px;border-radius: 20px;margin: 20px;">
+        <div class="swiper-slide">
+            <!-- 父级页面 -->
+            <div style="width: 100%;height: 100%;position: relative;display: flex;flex-direction: column;">
+                <!-- 主要内容 -->
+                <div style="flex: 1;">
+                    <div style="background: linear-gradient(to right bottom,#ff6666,#ff7e7e);width: 50%;height: 130px;border-radius: 20px;margin: 20px;">
+                    </div>
+                </div>
+                <!-- 页脚内容 -->
+                <div style="background-color: #fff;text-align: center;transform: translateY(-10%);box-sizing: border-box;" id="one">
+                    <!-- 底部内容 -->
+                </div>
             </div>
-            <div
-              style="height: 50px;flex: 1;background-color: #FFFF;border-radius: 10px;margin-left: 30px;margin-right: 30px;margin-top: 30%;border: 2px solid #000;">
-            </div>
-          </div>
-          <!-- 页脚内容 -->
-          <div style="background-color: #fff;text-align: center;transform: translateY(-10%);box-sizing: border-box;"
-            id="one">
-            <!-- 底部内容 -->
-          </div>
         </div>
-      </div>
     </div>
-  </div>
-  <div class="swiper-pagination"></div>
+</div>
+<div class="swiper-pagination"></div>
 
-  <!-- 彈窗 -->
-  <div id="modal" class="modal">
+<!-- 彈窗 -->
+<div id="modal" class="modal">
     <div class="modal-content">
-      <p>确认删除此网页吗？</p>
-      <div class="modal-buttons">
-        <b id="cancel-btn">取消</b>
-        <b id="confirm-btn">确认</b>
-      </div>
+        <p>确认删除此网页吗？</p>
+        <div class="modal-buttons">
+            <b id="cancel-btn">取消</b>
+            <b id="confirm-btn">确认</b>
+        </div>
     </div>
-  </div>
+</div>
+<script>
+    const app = window.app || {};
+    app.version = "1.50.16069";
+</script>
+<script src="js/lib/swiper-bundle.min.js"></script>
+<script src="js/lib/jquery.js"></script>
+<script src="js/lib/sortablejs.js"></script>
+<script src="js/main.js"></script>
 
-  <script src="js/lib/jquery.js"></script>
-  <script src="js/lib/swiper-bundle.min.js"></script>
-  <script src="js/main.js"></script>
-  <script>
-    // 页面滑动
-    var swiper = new Swiper('.swiper-container', {
-      direction: 'horizontal',
-      spaceBetween: 0,
-      loop: false,
-      pagination: {
-        el: '.swiper-pagination',
-        clickable: true,
-      },
-      touchEventsTarget: 'wrapper',
-      preventInteractionOnTransition: true,
-    });
-  </script>
-  <!-- 彈窗 -->
-  <script>
+<!-- 彈窗 -->
+<script>
     const modal = document.getElementById("modal");
     const cancelBtn = document.getElementById("cancel-btn");
     const confirmBtn = document.getElementById("confirm-btn");
-    var dom;
-    var evt;
-    var store;
-    var data;
-    var index;
+    let dom;
+    let evt;
+    let store;
+    let data;
+    let index;
 
     function openModal(dom, evt, store, data, index) {
-      modal.style.display = "block";
-      this.dom = dom;
-      this.evt = evt;
-      this.store = store;
-      this.data = data;
-      this.index = index;
+        modal.style.display = "block";
+        this.dom = dom;
+        this.evt = evt;
+        this.store = store;
+        this.data = data;
+        this.index = index;
     }
 
     function closeModal() {
-      modal.style.display = "none";
+        modal.style.display = "none";
+    }
+
+    function onClick(url) {
+        const ul = $(url).attr("name");
+        location.href = ul;
     }
 
     cancelBtn.addEventListener("click", closeModal);
-
     confirmBtn.addEventListener("click", function () {
-      // 在这里执行确认操作
-      dom.css("overflow", "visible");
-      dom.css({ transform: "translateY(60px)", opacity: 0, transition: ".3s" });
-      dom.on('transitionend', function (evt) {
-        if (evt.target !== this) {
-          return;
-        }
-        dom.remove();
-      });
-      data.splice(index, 1);
-      store.set("bookMark", data);
-      closeModal();
+        // 在这里执行确认操作
+        dom.css("overflow", "visible");
+        dom.css({transform: "translateY(60px)", opacity: 0, transition: ".3s"});
+        dom.on('transitionend', function (evt) {
+            if (evt.target !== this) {
+                return;
+            }
+            dom.remove();
+        });
+        data.splice(index, 1);
+        store.set("bookMark", data);
+        closeModal();
     });
-  </script>
+</script>
 </body>
-
 </html>

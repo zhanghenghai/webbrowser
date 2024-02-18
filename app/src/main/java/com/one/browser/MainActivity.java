@@ -48,7 +48,6 @@ import android.util.Patterns;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -76,6 +75,7 @@ import com.google.android.material.internal.NavigationMenuView;
 import com.kymjs.rxvolley.RxVolley;
 import com.kymjs.rxvolley.client.HttpCallback;
 import com.one.browser.activity.SysCartoonActivity;
+import com.one.browser.activity.SysChargeActivity;
 import com.one.browser.activity.SysImageGetColorActivity;
 import com.one.browser.activity.SysRecognitionActivity;
 import com.one.browser.activity.SysBase64Activity;
@@ -86,9 +86,9 @@ import com.one.browser.activity.SysEwmActivity;
 import com.one.browser.activity.SysTranslateActivity;
 import com.one.browser.activity.SysPhotoActivity;
 import com.one.browser.activity.SysRollLedActivity;
-import com.one.browser.activity.SysGetColorActivity;
 import com.one.browser.activity.SysTphbActivity;
 import com.one.browser.activity.SysTpsyActivity;
+import com.one.browser.activity.SysVolumeActivity;
 import com.one.browser.adapter.DialogPageAdapter;
 import com.one.browser.adapter.HomeAdapter;
 import com.one.browser.config.AppConfig;
@@ -168,11 +168,6 @@ public class MainActivity extends SysBaseActivity {
      */
     private static final String MESSAGES_CHANNEL = "messages";
 
-    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 0;
-    /**
-     * 地址栏
-     */
-    private String topContent;
     /**
      * 书签
      */
@@ -262,17 +257,9 @@ public class MainActivity extends SysBaseActivity {
      */
     private HistoryDao historyDao;
     /**
-     * 正在下载实时数据传输Message标志
-     */
-    private static final int PROCESSING = 1;
-    /**
-     * 下载失败时的Message标志
-     */
-    private static final int FAILURE = -1;
-    /**
      * 线程下载UI
      */
-    //private Handler handler = new UIHander();
+    //private Handler handler = new UIHandler();
     /**
      * 下载最大值
      */
@@ -327,10 +314,6 @@ public class MainActivity extends SysBaseActivity {
     private WebsiteDao websiteDao;
 
     /**
-     * 书签图标
-     */
-    private String iconBookPath = null;
-    /**
      * 菜单
      */
     private PopupWindow popupWindow;
@@ -338,6 +321,9 @@ public class MainActivity extends SysBaseActivity {
     private ValueAnimator animator;
 
     private HomeAdapter homeAdapter;
+
+    public MainActivity() {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -411,7 +397,10 @@ public class MainActivity extends SysBaseActivity {
 
     private String getTopContent() {
         config = getSharedPreferences("Config", MODE_PRIVATE);
-        topContent = config.getString("TopContent", "title");
+        /**
+         * 地址栏
+         */
+        String topContent = config.getString("TopContent", "title");
         Log.i(TAG, "顶部配置文件 >>> " + topContent);
         return topContent;
     }
@@ -433,6 +422,12 @@ public class MainActivity extends SysBaseActivity {
         binding.navigationView2.setNavigationItemSelectedListener(item -> {
 
             switch (item.getItemId()) {
+                // 记账
+                case R.id.sys_charge: {
+                    Intent intent = new Intent(MainActivity.this, SysChargeActivity.class);
+                    startActivity(intent);
+                    break;
+                }
                 // 证件
                 case R.id.sys_portrait: {
                     Intent intent = new Intent(MainActivity.this, SysPhotoActivity.class);
@@ -503,6 +498,12 @@ public class MainActivity extends SysBaseActivity {
                 // 图片动漫
                 case R.id.sys_cartoon: {
                     Intent intent = new Intent(MainActivity.this, SysCartoonActivity.class);
+                    startActivity(intent);
+                    break;
+                }
+                // 图片体积
+                case R.id.sys_imagevolume: {
+                    Intent intent = new Intent(MainActivity.this, SysVolumeActivity.class);
                     startActivity(intent);
                     break;
                 }
@@ -790,12 +791,7 @@ public class MainActivity extends SysBaseActivity {
      */
     private void moreClick() {
         //binding.homeRightMore.setOnClickListener(this::showPoPup);
-        binding.homeRightMore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showPop();
-            }
-        });
+        binding.homeRightMore.setOnClickListener(view -> showPop());
     }
 
 
@@ -811,7 +807,7 @@ public class MainActivity extends SysBaseActivity {
         // 设置pop透明效果
         popupWindow.setBackgroundDrawable(new ColorDrawable(0x0000));
         // 设置pop出入动画
-        popupWindow.setAnimationStyle(R.style.pop_add);
+        //popupWindow.setAnimationStyle(R.style.pop_add);
         // 设置pop获取焦点，如果为false点击返回按钮会退出当前Activity，如果pop中有Editor的话，focusable必须要为true
         popupWindow.setFocusable(true);
         // 设置pop可点击，为false点击事件无效，默认为true
@@ -851,65 +847,8 @@ public class MainActivity extends SysBaseActivity {
             popupWindow.dismiss();
             webList.get(currentPage).loadUrl("view-source:" + PRESENT_URL);
         });
-
-
     }
 
-    /**
-     * 更多页面函数
-     */
-    private void showPoPup(View view) {
-        if (mPopupMenu == null) {
-            mPopupMenu = new PopupMenu(MainActivity.this, view);
-            MenuInflater inflater = mPopupMenu.getMenuInflater();
-            inflater.inflate(R.menu.home_more, mPopupMenu.getMenu());
-            mPopupMenu.setOnMenuItemClickListener(mOnMenuItemClickListener);
-        }
-        mPopupMenu.show();
-    }
-
-    private final PopupMenu.OnMenuItemClickListener mOnMenuItemClickListener = item -> {
-        // 添加书签
-        if (item.getItemId() == R.id.home_collect) {
-            Bookmark bookmark;
-            String title = webList.get(currentPage).getTitle();
-            String url = webList.get(currentPage).getUrl();
-            @SuppressLint("SimpleDateFormat") SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String time = sDateFormat.format(new Date());
-            History history = historyDao.getOne(title);
-            // 从数据库查询然后进行书签添加
-            if (history != null) {
-                Log.i(TAG, "查询到图标 >>> : " + history.getIcon());
-                Log.i(TAG, "查询到标题 >>> : " + history.getTitle());
-                Log.i(TAG, "查询到俩链接 >>> : " + history.getUrl());
-                bookmark = new Bookmark(history.getIcon(), history.getTitle(), history.getUrl(), time, "yes");
-            } else {
-                bookmark = new Bookmark(null, title, url, time, "yes");
-            }
-            BookmarkDao bookmarkDao = new BookmarkDao(MainActivity.this);
-            bookmarkDao.insertDate(bookmark);
-//            new BookDialog(MainActivity.this, R.style.dialogTheme, title, url,
-//                    (title1, url1, yn) -> {
-//                        if (title1.isEmpty() || url1.isEmpty()) {
-//                            Toast.makeText(getApplicationContext(), "标题或链接为空", Toast.LENGTH_SHORT).show();
-//                        } else {
-//                            @SuppressLint("SimpleDateFormat") SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
-//                            String time = sDateFormat.format(new Date());
-//                            Bookmark bookmark = new Bookmark(title1, url1, time, "yes");
-//                            BookmarkDao bookmarkDao = new BookmarkDao(MainActivity.this);
-//                            long id = bookmarkDao.insertDate(bookmark);
-//                            Log.i(TAG, "插入成功之后 ID" + id);
-//                        }
-//                    }, "添加书签").
-//                    show();
-        }
-        // 获取网页源码
-        if (item.getItemId() == R.id.home_code) {
-            Log.i(TAG, "查看源码的网站 >>> " + PRESENT_URL);
-            webList.get(currentPage).loadUrl("view-source:" + PRESENT_URL);
-        }
-        return super.onOptionsItemSelected(item);
-    };
 
     /**
      * 变量初始化
@@ -1063,8 +1002,20 @@ public class MainActivity extends SysBaseActivity {
         binding.homeOneEdit.setSelectAllOnFocus(true);
         // 主页显示
         binding.homeOneEdit.setOnFocusChangeListener((v, hasFocus) -> {
+            Log.i(TAG, "locationClick: 已触发 >>>");
             if (hasFocus) {
-                binding.homeOneEdit.setText(webList.get(currentPage).getUrl());
+                // 进行判断地址栏显示未网址还是标题
+                switch (getTopContent()) {
+                    case "title":
+                        binding.homeOneEdit.setText(webList.get(currentPage).getTitle());
+                        break;
+                    case "website":
+                        binding.homeOneEdit.setText(webList.get(currentPage).getUrl());
+                        break;
+                    default:
+                        binding.homeOneEdit.setText(webList.get(currentPage).getOriginalUrl().split("/")[2]);
+                }
+
                 binding.homeOneEdit.selectAll();
                 if (HOME_URL.equals(binding.homeOneEdit.getText().toString())) {
                     binding.homeOneEdit.setText("");
@@ -1458,7 +1409,6 @@ public class MainActivity extends SysBaseActivity {
                             Log.i(TAG, "获取图标 >>> " + website.getPath());
                             String iconPath = website.getPath();
                             // 更新图标
-                            iconBookPath = iconPath;
                             historyDao.Update(iconPath, view.getTitle());
                         } else {
                             Log.i(TAG, "数据为 null");
@@ -1469,7 +1419,6 @@ public class MainActivity extends SysBaseActivity {
                                 WebsiteDao websiteDao = new WebsiteDao(getApplicationContext());
                                 websiteDao.installData(new Website(getEngine(), path + File.separator + name));
                                 // 更新图标
-                                iconBookPath = iconPath;
                                 historyDao.Update(iconPath, view.getTitle());
                             }
                         }
@@ -1478,7 +1427,6 @@ public class MainActivity extends SysBaseActivity {
                         String iconPath = BitMapUtil.saveBitmap(icon, path, name);
                         if (iconPath != null) {
                             // 历史数据存储
-                            iconBookPath = iconPath;
                             historyDao.Update(iconPath, view.getTitle());
                         }
                     }

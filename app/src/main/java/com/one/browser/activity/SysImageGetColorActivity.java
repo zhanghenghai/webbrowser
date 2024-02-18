@@ -38,7 +38,6 @@ public class SysImageGetColorActivity extends AppCompatActivity {
     /**
      * Intent
      */
-    private Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
     /**
      * 选择图片
      */

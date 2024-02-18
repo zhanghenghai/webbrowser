@@ -206,7 +206,23 @@
             android:hardwareAccelerated="true"
             android:label="滚动字幕显示"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.one.NoActionBar" /> <!-- 通知类型下载器 -->
+            android:theme="@style/Theme.one.NoActionBar" />
+        <activity
+            android:name=".activity.SysVolumeActivity"
+            android:exported="true"
+            android:label="图片体积"
+            android:theme="@style/Theme.one.NoActionBar" />
+        <activity
+            android:name=".activity.SysImagePDFActivity"
+            android:exported="false"
+            android:label="图片转PDF"
+            android:theme="@style/Theme.one.NoActionBar" />
+        <activity
+            android:name=".activity.SysChargeActivity"
+            android:exported="false"
+            android:label="简单记账"
+            android:theme="@style/Theme.one.NoActionBar" />
+        <!-- 下载器 -->
         <service android:name=".service.DownloadService" />
 
         <meta-data

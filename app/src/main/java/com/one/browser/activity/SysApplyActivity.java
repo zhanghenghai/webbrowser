@@ -11,7 +11,6 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,9 +23,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.flask.colorpicker.ColorPickerView;
@@ -45,7 +41,6 @@ import com.one.browser.view.NoScrollViewPager;
 
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
