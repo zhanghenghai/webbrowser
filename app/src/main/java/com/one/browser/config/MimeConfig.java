@@ -71,5 +71,8 @@ public class MimeConfig {
             {".zip", "application/zip"},
             {".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"},
             {"", "*/*"}
+
+
+
     };
 }

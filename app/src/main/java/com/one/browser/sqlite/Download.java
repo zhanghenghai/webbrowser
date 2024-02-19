@@ -8,14 +8,17 @@ public class Download {
     private String title;
     private String path;
     private String mime;
+    private String size;
     private String time;
 
-    Download(){
+    public Download() {
     }
-    public Download(String title, String path, String mime,String time) {
-        this.title = title;
-        this.path = path;
-        this.mime = mime;
+
+    public Download(String fileName, String fileUrl, String fileType, String fileSize, String time) {
+        this.title = fileName;
+        this.path = fileUrl;
+        this.mime = fileType;
+        this.size = fileSize;
         this.time = time;
     }
 
@@ -41,6 +44,14 @@ public class Download {
 
     public void setMime(String mime) {
         this.mime = mime;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
     }
 
     public String getTime() {

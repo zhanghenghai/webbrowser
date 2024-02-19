@@ -18,7 +18,7 @@ public class DownloadDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sql = "create table if not exists " + TABLE_NAME + " (Title text primary key,Path text,Mime text,Time text)";
+        String sql = "create table if not exists " + TABLE_NAME + " (Title text,Path text,Mime text,Size text,Time text)";
         db.execSQL(sql);
     }
 

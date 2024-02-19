@@ -19,13 +19,19 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
+import com.one.browser.MainActivity;
 import com.one.browser.R;
 import com.one.browser.adapter.BookAdapter;
 import com.one.browser.sqlite.Bookmark;
 import com.one.browser.sqlite.BookmarkDao;
+import com.one.browser.sqlite.History;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -42,6 +48,8 @@ public class BookmarkActivity extends AppCompatActivity {
     private List<Bookmark> bookmarkList;
 
     private BookAdapter adapter;
+
+    private ImageView bookmark_more;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,11 +92,38 @@ public class BookmarkActivity extends AppCompatActivity {
                 showPopDialog(view, position);
             }
         });
+        bookmark_more.setOnClickListener(v -> {
+            showPop();
+        });
 
     }
 
     private void init() {
         popupWindow = new PopupWindow(this);
+        bookmark_more = findViewById(R.id.bookmark_more);
+    }
+
+
+    private void showPop() {
+        // 设置布局文件
+        popupWindow.setContentView(LayoutInflater.from(this).inflate(R.layout.book_right, null));
+        // 为了避免部分机型不显示，我们需要重新设置一下宽高
+        popupWindow.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+        popupWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        // 设置pop透明效果
+        popupWindow.setBackgroundDrawable(new ColorDrawable(0x0000));
+        // 设置pop出入动画
+        //popupWindow.setAnimationStyle(R.style.pop_add);
+        // 设置pop获取焦点，如果为false点击返回按钮会退出当前Activity，如果pop中有Editor的话，focusable必须要为true
+        popupWindow.setFocusable(true);
+        // 设置pop可点击，为false点击事件无效，默认为true
+        popupWindow.setTouchable(true);
+        // 设置点击pop外侧消失，默认为false；在focusable为true时点击外侧始终消失
+        popupWindow.setOutsideTouchable(true);
+        // 相对于 + 号正下面，同时可以设置偏移量
+        popupWindow.showAsDropDown(bookmark_more, -100, 0);
+        // 书签点击事件
+        LinearLayout bookLayout = popupWindow.getContentView().findViewById(R.id.home_bookmark_add);
     }
 
     private void showPopDialog(View view, int position) {

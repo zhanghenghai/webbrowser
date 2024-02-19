@@ -55,7 +55,6 @@ public class DownloadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void setOnItemClickListener(ItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
-
     }
 
 
@@ -72,8 +71,10 @@ public class DownloadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         Download download = downloadList.get(position);
         Log.i("TAG", "history: 获得的数据 >>>" + download.getTitle());
+        Log.i("TAG", "history: 获得的文件大小 >>>" + download.getSize());
         ((ViewHolder) holder).icon.setImageResource(R.drawable.download_line);
         ((ViewHolder) holder).title.setText(download.getTitle());
+        ((ViewHolder) holder).download_size.setText(download.getSize()+" MB");
         holder.itemView.setOnClickListener(view -> {
             itemClickListener.onClick(download.getTitle(), download.getPath(), download.getMime());
         });
@@ -97,11 +98,13 @@ public class DownloadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     static class ViewHolder extends RecyclerView.ViewHolder {
         private final ImageView icon;
         private final TextView title;
+        private final TextView download_size;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             icon = itemView.findViewById(R.id.download_image);
             title = itemView.findViewById(R.id.download_title);
+            download_size = itemView.findViewById(R.id.download_size);
         }
     }
 }

@@ -231,7 +231,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.one.browser"
+            android:authorities="com.one.browser.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -239,9 +239,6 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <receiver
-            android:name=".MainActivity$CustomButtonReceiver"
-            android:exported="false" />
     </application>
 
 </manifest>

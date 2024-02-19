@@ -3,7 +3,6 @@ package com.one.browser;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.PopupMenu;
-import androidx.core.app.NotificationCompat;
 
 
 import androidx.core.content.FileProvider;
@@ -20,7 +19,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -37,7 +35,6 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
@@ -97,7 +94,6 @@ import com.one.browser.dialog.MultiDialog;
 import com.one.browser.dialog.OfficialDialog;
 import com.one.browser.entity.DialogWindow;
 import com.one.browser.entity.Home;
-import com.one.browser.entity.Notice;
 import com.one.browser.entity.Resource;
 import com.one.browser.entity.Size;
 import com.one.browser.entity.WebMessage;
@@ -110,7 +106,6 @@ import com.one.browser.more.HistoryActivity;
 import com.one.browser.more.ScriptActivity;
 import com.one.browser.more.SettingActivity;
 import com.one.browser.service.DownloadService;
-import com.one.browser.service.FileDownloaded;
 import com.one.browser.sqlite.Bookmark;
 import com.one.browser.sqlite.BookmarkDao;
 import com.one.browser.sqlite.CommonDao;
@@ -140,10 +135,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -268,15 +261,6 @@ public class MainActivity extends SysBaseActivity {
      * 通知栏按钮点击
      */
     private static Handler BarHandler;
-
-    /**
-     * 下载文件
-     */
-    private String filePath;
-    /**
-     * 线程存储
-     */
-    private Map<Integer, DownloadTask> map = new LinkedHashMap<>();
     /**
      * 下载文件
      */
@@ -360,8 +344,6 @@ public class MainActivity extends SysBaseActivity {
         variable();
         // 更多选项
         moreClick();
-        // 通知栏点击异步处理
-        bar();
         // 对象初始化
         ObjectInit();
         // 配置文件
@@ -638,44 +620,6 @@ public class MainActivity extends SysBaseActivity {
         return (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
-    /**
-     * 通知栏点击异步处理
-     */
-    private void bar() {
-        BarHandler = new Handler() {
-            @Override
-            public void handleMessage(@NonNull Message msg) {
-                super.handleMessage(msg);
-                Bundle bundle = msg.getData();
-                int id = bundle.getInt("id");
-                switch (msg.what) {
-                    case 0:
-                        Log.i(TAG, "关闭下载");
-                        // 关闭通知
-                        Log.i(TAG, "获取ID >>>: " + id);
-                        // 关闭通知栏
-                        NotificationManager manager_one = getManager();
-                        manager_one.cancel(id);
-                        if (map.get(id) != null) {
-                            exit(map.get(id));
-                        }
-                        break;
-                    case 1:
-                        Log.i(TAG, "点击安装");
-                        String fileName = bundle.getString("fileName");
-                        String mime = bundle.getString("mime");
-                        Log.i(TAG, "获取ID >>>: " + id);
-                        Log.i(TAG, "安装路径: " + fileName);
-                        Log.i(TAG, "获取类型: " + mime);
-                        install(fileName, mime);
-                        NotificationManager manager_two = getManager();
-                        manager_two.cancel(id);
-                        break;
-                }
-            }
-        };
-    }
-
 
     private void install(String fileName, String mime) {
         Log.i(TAG, "文件类型 >>> " + mime);
@@ -690,40 +634,16 @@ public class MainActivity extends SysBaseActivity {
         startActivity(installIntent);
     }
 
-
-    /**
-     * 进度条
-     */
-    private NotificationCompat.Builder scheduleInform(Notice notice) {
-        // 构造
-        createNotificationChannel();
-        // 创建通知的类
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, MESSAGES_CHANNEL).setSmallIcon(R.drawable.ic_launcher_background).setContentTitle(notice.getTitle()).setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                // 点击
-                .addAction(R.drawable.home_index, notice.getButton(), PendingIntent.getBroadcast(this, notice.getNotifyId(), notice.getIntent(), PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE))
-                // 进度条
-                .setProgress(notice.getTotalProgress(), notice.getCurrentProgress(), false)
-                // 设置为自动取消
-                .setAutoCancel(true);
-        return builder;
-    }
-
-
-    /**
-     * 退出下载
-     */
-    public void exit(DownloadTask downloadTask) {
-        Log.i(TAG, "exit: 判断是否为null");
-        Log.i(TAG, "exit: 不为空");
-        downloadTask.exit();
-    }
-
     /**
      * 运行在主线程
      *
-     * @param path 下载地址
+     * @param filepath 文件路径
+     * @param fileName 文件名称
+     * @param fileSize 文件大小
+     * @param mime     文件类型
      */
-    private void download(String path, String saveDir, String fileName, String mime, int fileSize) {
+    private void download(String filepath, String fileName, String mime, String fileSize) {
+        Log.i(TAG, "download: 正在下载文件 >>>> " + filepath);
 
         // 现在文件之前判断是否具有通知栏权限
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -731,27 +651,34 @@ public class MainActivity extends SysBaseActivity {
                 Log.i(TAG, "已经具有通知栏权限");
                 // 开启服务
                 Intent intent = new Intent(MainActivity.this, DownloadService.class);
-                intent.putExtra("fileUrl", path);
+                Bundle bundle = new Bundle();
+                // 文件下载地址
+                bundle.putString("fileUrl", filepath);
+                // 文件名称
+                bundle.putString("fileName", fileName);
+                // 文件类型
+                bundle.putString("fileType", mime);
+                // 文件大小
+                bundle.putString("fileSize", fileSize);
+                intent.putExtras(bundle);
                 startForegroundService(intent);
             } else {
                 Log.i(TAG, "没有通知栏权限");
             }
+        } else {
+            Intent intent = new Intent(MainActivity.this, DownloadService.class);
+            Bundle bundle = new Bundle();
+            // 文件下载地址
+            bundle.putString("fileUrl", filepath);
+            // 文件名称
+            bundle.putString("fileName", fileName);
+            // 文件类型
+            bundle.putString("fileType", mime);
+            // 文件大小
+            bundle.putString("fileSize", fileSize);
+            intent.putExtras(bundle);
+            startForegroundService(intent);
         }
-
-
-//        Intent intent = new Intent(MainActivity.this, DownloadService.class);
-//        intent.putExtra("fileUrl", path);
-//        startForegroundService(intent);
-//        Log.i(TAG, "path >>>> " + path);
-//        Log.i(TAG, "saveDir >>>> " + saveDir);
-//        Log.i(TAG, "fileName >>>> " + fileName);
-//        Log.i(TAG, "mime >>>> " + mime);
-//        Log.i(TAG, "fileSize >>>> " + fileSize);
-//        DownloadTask downloadTask = new DownloadTask();
-//        downloadTask.init(path, saveDir, new FileDownloaded(getApplicationContext(), path), downloadTask, fileName, mime, fileSize);
-//        Thread thread = new Thread(downloadTask);
-//        thread.start();
-
     }
 
     /**
@@ -1477,13 +1404,8 @@ public class MainActivity extends SysBaseActivity {
         });
 
         // 浏览器监听下载
-        newWeb.setDownloadListener((s, s1, s2, s3, l) ->
-        {
-            Log.i(TAG, "下载链接: " + s);
-            Log.i(TAG, "userAgent: " + s1);
-            Log.i(TAG, "文件类型: " + s3);
-            Log.i(TAG, "文件大小: " + l);
-            Log.i(TAG, "initWebView: ");
+        newWeb.setDownloadListener((s, s1, s2, s3, l) -> {
+
 
 
             // 此处进行文件解析 获取下载的文件名称和文件大小
@@ -1505,7 +1427,6 @@ public class MainActivity extends SysBaseActivity {
                     DecimalFormatSymbols symbols = new DecimalFormatSymbols(locale);
                     DecimalFormat decimalFormat = new DecimalFormat("#.##", symbols);
                     String formattedNumber = decimalFormat.format(megabytes);
-                    String path = Environment.DIRECTORY_DOWNLOADS + "/" + AppConfig.PACK;
 
                     // 取消
                     View.OnClickListener onClickCancel = v -> {
@@ -1515,7 +1436,7 @@ public class MainActivity extends SysBaseActivity {
                     View.OnClickListener onClickLConfirm = v -> {
                         Log.i("TAG", "确认下载 >>> ");
                         // 下载地址和下载目录
-                        download(s, path, webMessage.getFileName(), webMessage.getMime(), webMessage.getFileSize());
+                        download(s, webMessage.getFileName(), webMessage.getMime(), formattedNumber);
                     };
                     // 弹窗显示
                     showFocusDialog(webMessage.getFileName(), formattedNumber, onClickCancel, onClickLConfirm);
@@ -2053,225 +1974,4 @@ public class MainActivity extends SysBaseActivity {
         }
     }
 
-//    private class UIHander extends Handler {
-//        public void handleMessage(Message msg) {
-//            switch (msg.what) {
-//                //下载时
-//                case PROCESSING:
-//                    Bundle bundle = msg.getData();
-//                    // 线程ID
-//                    int id = bundle.getInt("id");
-//                    Log.i(TAG, "通知栏ID:>>> " + id);
-//                    // 从消息中获取已经下载的数据长度
-//                    int size = bundle.getInt("size");
-//                    Log.i(TAG, "已经下载的数据长度: >>> " + size);
-//                    // 从消息中获取文件总大小
-//                    int sum = bundle.getInt("sum");
-//                    Log.i(TAG, "文件总大小: >>> " + sum);
-//                    // 计算已经下载的百分比,此处需要转换为浮点数计算
-//                    float num = (float) size / (float) sum;
-//                    Log.i(TAG, "转换为浮点 >>> " + num);
-//                    // 把获取的浮点数计算结果转换为整数
-//                    int result = (int) (num * 100);
-//                    Log.i(TAG, "下载 >>> " + result + "%");
-//                    String path = bundle.getString("path");
-//                    Log.i(TAG, "保存路径 >>> " + path);
-//                    String fileName = bundle.getString("filename");
-//                    Log.i(TAG, "文件名称 >>>  " + fileName);
-//                    Notice notice = new Notice();
-//                    notice.setNotifyId(id);
-//                    notice.setTotalProgress(sum);
-//                    notice.setCurrentProgress(size);
-//                    // 判断是否下载完成
-//                    if (result == 100) {
-//                        notice.setTitle("点击安装");
-//                        notice.setButton("安装");
-//                        Intent broadcast = new Intent(MainActivity.this, CustomButtonReceiver.class);
-//                        broadcast.setAction("yes");
-//                        // 传递状态
-//                        broadcast.putExtra("schedule", "100");
-//                        // 传递文件路径
-//                        broadcast.putExtra("fileName", fileName);
-//                        // 传递线程ID
-//                        broadcast.putExtra("id", id);
-//                        Log.i(TAG, "handleMessage: " + broadcast.getStringExtra("schedule"));
-//                        Log.i(TAG, "handleMessage: " + broadcast.getStringExtra("fileName"));
-//                        notice.setNotifyId(id++);
-//                        notice.setIntent(broadcast);
-//                    } else {
-//                        Intent broadcast = new Intent(MainActivity.this, CustomButtonReceiver.class);
-//                        broadcast.setAction("no");
-//                        broadcast.putExtra("location", path);
-//                        broadcast.putExtra("id", id);
-//                        Log.i(TAG, "取消下载id: " + id);
-//                        Log.i(TAG, "handleMessage: " + broadcast.getIntExtra("id", 0));
-//                        notice.setIntent(broadcast);
-//                        Log.i(TAG, "正在下载 点击取消");
-//                        notice.setNotifyId(id++);
-//                        notice.setTitle(fileName);
-//                        notice.setButton("暂停");
-//                    }
-//                    // 循环通知
-//                    notifyNow(notice);
-//                    break;
-//                case FAILURE:
-//                    //下载失败时提示
-//                    Log.i(TAG, "文件下载失败");
-//                    break;
-//                default:
-//                    Log.i(TAG, "handleMessage: ");
-//            }
-//        }
-//    }
-
-
-    private class DownloadTask implements Runnable {
-        /**
-         * 下载地址
-         */
-        private String path;
-        /**
-         * 保存目录
-         */
-        private String saveDir;
-        /**
-         * 下载
-         */
-        private FileDownloaded loader;
-        /**
-         * 下载线程
-         */
-        private DownloadTask downloadTask;
-        /**
-         * 文件名称
-         */
-        private String fileName;
-        /**
-         * 文件类型
-         */
-        private String mime;
-        /**
-         * 文件大小
-         */
-        private int fileSize;
-
-
-        /**
-         * @param saveDir      安装目录
-         * @param loader       loader
-         * @param downloadTask downloadTask
-         */
-        private void init(String path, String saveDir, FileDownloaded loader, DownloadTask downloadTask, String fileName, String mime, int fileSize) {
-            this.path = path;
-            this.saveDir = saveDir;
-            this.loader = loader;
-            this.downloadTask = downloadTask;
-            this.fileName = fileName;
-            this.mime = mime;
-            this.fileSize = fileSize;
-
-            Log.i(TAG, "初始化线程ID: " + Thread.currentThread().getId());
-        }
-
-        /**
-         * 退出下载
-         */
-        private void exit() {
-            Log.i(TAG, "exit: 线程 >>> " + Thread.currentThread().getName());
-            Log.i(TAG, "exit: 线程 ID >>> " + Thread.currentThread().getId());
-            Log.i(TAG, "exit: 调用退出下载 >>>");
-            if (loader != null) {
-                Log.i(TAG, "exit: 已调用退出");
-                loader.exit();
-            }
-        }
-
-        public void run() {
-            try {
-                // 下载线程接收到的线程
-                Log.i(TAG, "线程 >>> : " + Thread.currentThread().getName());
-                Log.i(TAG, "线程 ID >>> : " + Thread.currentThread().getId());
-                loader.init(saveDir, fileName, mime, fileSize);
-                Log.i(TAG, "返回文件路径全称: " + filePath);
-                scheduleMax = loader.getFileSize();
-                Log.i(TAG, "返回文件总大小 run: " + scheduleMax);
-                // 设置
-                map.put((int) Thread.currentThread().getId(), downloadTask);
-                loader.download(downloaded -> {
-                    Log.i(TAG, "打印返回 >>>> " + Thread.currentThread().getName() + " >>>" + downloaded.getDownloadedSize());
-                    Log.i(TAG, "获取线程Id >>>> " + Thread.currentThread().getId());
-                    Log.i(TAG, "文件已下载 >>> " + downloaded.getDownloadedSize());
-                    Log.i(TAG, "文件总大小 >>> " + downloaded.getFileSize());
-                    Log.i(TAG, "文件安装路径 >>> " + downloaded.getSaveFile());
-                    Log.i(TAG, "文件名称 >>> " + downloaded.getFileName());
-                    Log.i(TAG, "下载状态 >>> " + downloaded.isExited());
-                    if (downloaded.isExited()) {
-                        Log.i(TAG, "结束下载");
-                        return;
-                    }
-                    Log.i(TAG, "获取最终的下载地址 >>>");
-                    Bundle bundle = new Bundle();
-                    // 线程ID
-                    bundle.putInt("id", (int) Thread.currentThread().getId());
-                    // 已下载文件大小
-                    bundle.putInt("size", downloaded.getDownloadedSize());
-                    // 文件总大小
-                    bundle.putInt("sum", downloaded.getFileSize());
-                    // 文件路径
-                    bundle.putString("path", downloaded.getSaveFile());
-                    // 文件名称
-                    bundle.putString("filename", downloaded.getFileName());
-                    // 文件消息
-                    Message msg = new Message();
-                    msg.what = 1;
-                    msg.setData(bundle);
-                    //handler.sendMessage(msg);
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
-                //handler.sendMessage(handler.obtainMessage(-1));
-            }
-        }
-    }
-
-    public static class CustomButtonReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.i("TAG", "广播通知");
-            String state = intent.getAction();
-            Log.i("TAG", "下载状态 >>> " + state);
-            Message message = Message.obtain();
-            if ("yes".equals(state)) {
-                int id = intent.getIntExtra("id", 0);
-                String fileName = intent.getStringExtra("fileName");
-                String mime = intent.getStringExtra("mime");
-                Log.i("TAG", "获取 >>> " + id);
-                Log.i("TAG", "获取文件路径 >>> " + fileName);
-                Log.i("TAG", "获取文件类型 >>> " + mime);
-                Bundle bundle = new Bundle();
-                bundle.putInt("id", id);
-                bundle.putString("fileName", fileName);
-                bundle.putString("mime", mime);
-                message.setData(bundle);
-                Log.i("TAG", "下载完毕");
-                // 进行安装
-                message.what = 1;
-                BarHandler.sendMessage(message);
-            } else if ("no".equals(state)) {
-                int schedule = intent.getIntExtra("schedule", 0);
-                int id = intent.getIntExtra("id", 0);
-                Log.i("TAG", "获取通知ID >>> " + id);
-                Log.i("TAG", "获取进度 >>> " + schedule);
-                Log.i("TAG", "暂停下载");
-                Bundle bundle = new Bundle();
-                bundle.putInt("id", id);
-                // 传递数据
-                message.setData(bundle);
-                // 进行取消
-                message.what = 0;
-                BarHandler.sendMessage(message);
-            }
-        }
-    }
 }

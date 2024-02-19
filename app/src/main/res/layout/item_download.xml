@@ -16,17 +16,23 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_marginStart="5dp"
+        android:layout_marginStart="10dp"
         android:orientation="vertical">
         <TextView
             android:id="@+id/download_title"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="40dp"
             android:maxLines="1"
             android:textColor="@color/blackColorBackground"
             android:textSize="16dp"
             android:text="标题"
             android:gravity="center_vertical">
         </TextView>
+        <TextView
+            android:id="@+id/download_size"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:textColor="@color/black"
+            android:text="大小" />
     </LinearLayout>
 </LinearLayout>

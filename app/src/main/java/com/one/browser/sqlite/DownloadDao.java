@@ -13,7 +13,7 @@ import java.util.List;
  * @author 18517
  */
 public class DownloadDao {
-    private final String[] DOWNLOAD_COLUMNS = new String[]{"Title", "Path", "Mime", "Time"};
+    private final String[] DOWNLOAD_COLUMNS = new String[]{"Title", "Path", "Mime", "Size", "Time"};
     private DownloadDBHelper dbHelper;
 
     private final String TIME = "Time desc";
@@ -32,6 +32,7 @@ public class DownloadDao {
         bookmark.setTitle(cursor.getString(cursor.getColumnIndex("Title")));
         bookmark.setPath(cursor.getString(cursor.getColumnIndex("Path")));
         bookmark.setMime(cursor.getString(cursor.getColumnIndex("Mime")));
+        bookmark.setSize(cursor.getString(cursor.getColumnIndex("Size")));
         bookmark.setTime(cursor.getString(cursor.getColumnIndex("Time")));
         return bookmark;
     }
@@ -90,6 +91,7 @@ public class DownloadDao {
         String title = download.getTitle();
         String path = download.getPath();
         String mime = download.getMime();
+        String size = download.getSize();
         String time = download.getTime();
         try {
             db = dbHelper.getWritableDatabase();
@@ -98,6 +100,7 @@ public class DownloadDao {
             contentValues.put("Title", title);
             contentValues.put("Path", path);
             contentValues.put("Mime", mime);
+            contentValues.put("Size", size);
             contentValues.put("Time", time);
             id = db.replaceOrThrow(DownloadDBHelper.TABLE_NAME, null, contentValues);
             db.setTransactionSuccessful();

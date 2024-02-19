@@ -27,7 +27,7 @@ public class WebMessageUtil {
     /**
      * 文件类型
      */
-    private String mime;
+    private String fileType;
 
     /**
      * 文件大小
@@ -41,43 +41,27 @@ public class WebMessageUtil {
 
     private static final String DISPOSITION = "Content-disposition";
 
+    private static final Pattern PATTERN = Pattern.compile("=([^&]+)");
+
 
     public WebMessage gitFileName(String downloadUrl) {
         Log.i("TAG", "获取到的链接 >>>> " + downloadUrl);
         try {
             URL url = new URL(downloadUrl);
             //创建远程连接句柄,这里并未真正连接
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            //设置连接超时事件为5秒
-            conn.setConnectTimeout(5000);
-            //设置请求方式为GET
-            conn.setRequestMethod("GET");
-            //设置用户端可以接收的媒体类型
-            conn.setRequestProperty("Accept", "image/gif, image/jpeg, image/pjpeg, " +
-                    "image/pjpeg, application/x-shockwave-flash, application/xaml+xml, " +
-                    "application/vnd.ms-xpsdocument, application/x-ms-xbap," +
-                    " application/x-ms-application, application/vnd.ms-excel," +
-                    " application/vnd.ms-powerpoint, application/msword, */*");
-            //设置用户语言
-            conn.setRequestProperty("Accept-Language", "zh-CN");
-            //设置请求的来源页面,便于服务端进行来源统计
-            conn.setRequestProperty("Referer", downloadUrl);
-            //设置客户端编码
-            conn.setRequestProperty("Charset", "UTF-8");
-            //设置用户代理
-            conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 8.0; " +
-                    "Windows NT 5.2; Trident/4.0; .NET CLR 1.1.4322; .NET CLR 2.0.50727;" +
-                    " .NET CLR 3.0.04506.30; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729)");
-            //设置connection的方式
-            conn.setRequestProperty("Connection", "Keep-Alive");
-            //和远程资源建立正在的链接,但尚无返回的数据流
-            conn.connect();
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            //设置连接超时事件为10秒
+            connection.setConnectTimeout(10000);
+            //设置禁止压缩
+            connection.setRequestProperty("Accept-Encoding", "identity");
+            //建立连接
+            connection.connect();
             // 打印返回的Http的头字段集合
-            printResponseHeader(conn);
+            printResponseHeader(connection);
             //获取文件名称
-            if (getFileName(conn) != null) {
+            if (getFileName(connection) != null) {
                 // 1、从请求中获取
-                this.fileName = getFileName(conn);
+                this.fileName = getFileName(connection);
                 Log.i("TAG", "gitFileName:  >>> " + fileName);
             } else if (getUrl(downloadUrl) != null) {
                 // 2、从链接中获取
@@ -89,12 +73,13 @@ public class WebMessageUtil {
                 Log.i("TAG", "gitFileName:  >>> " + fileName);
             }
             Log.i("TAG", "获取文件名 >>> " + this.fileName);
-            this.mime = getMime(conn);
-            Log.i("TAG", "文件类型 >>> " + getMime(conn));
+            // 文件类型
+            this.fileType = getMime(connection);
+            Log.i("TAG", "文件类型 >>> " + getMime(connection));
             //对返回的状态码进行判断,用于检查是否请求成功,返回200时执行下面的代码
-            if (conn.getResponseCode() == RESPONSE) {
+            if (connection.getResponseCode() == RESPONSE) {
                 //根据响应获得文件大小
-                this.fileSize = conn.getContentLength();
+                this.fileSize = connection.getContentLength();
                 if (this.fileSize <= 0) {
                     //文件长度小于等于0时抛出运行时异常
                     //throw new RuntimeException("不知道文件大小");
@@ -102,7 +87,7 @@ public class WebMessageUtil {
                 }
             } else {
                 //打印错误信息
-                print("服务器响应错误:" + conn.getResponseCode() + conn.getResponseMessage());
+                print("服务器响应错误:" + connection.getResponseCode() + connection.getResponseMessage());
                 throw new RuntimeException("服务器反馈出错");
             }
         } catch (Exception e) {
@@ -110,7 +95,7 @@ public class WebMessageUtil {
             print(e.toString());
             throw new RuntimeException("无法连接URL");
         }
-        return new WebMessage(this.fileName, this.mime, this.fileSize);
+        return new WebMessage(this.fileName, this.fileType, this.fileSize);
     }
 
     /**
@@ -163,8 +148,7 @@ public class WebMessageUtil {
             //使用正则表达式查询文件名
             String disposition = conn.getHeaderField(DISPOSITION);
             Log.i("TAG", "getFileName: " + disposition);
-            Pattern pattern = Pattern.compile("=([^&]+)");
-            Matcher matcher = pattern.matcher(disposition);
+            Matcher matcher = PATTERN.matcher(disposition);
             if (matcher.find()) {
                 String filename = matcher.group(1);
                 String decodedFilename = URLDecoder.decode(filename, "UTF-8");
@@ -189,7 +173,7 @@ public class WebMessageUtil {
     private String getUrl(String downloadUrl) {
         Log.i("TAG", "通过URL 获取文件下载名 >>> " + downloadUrl);
         String filename = downloadUrl.substring(downloadUrl.lastIndexOf('/') + 1);
-        Log.i("TAG", "截取之后文件名 >>> : "+filename);
+        Log.i("TAG", "截取之后文件名 >>> : " + filename);
         for (int i = 0; i < MimeConfig.MIME.length; i++) {
             if (filename.contains(MimeConfig.MIME[i][0])) {
                 // 如果存在则打印出来
@@ -200,7 +184,7 @@ public class WebMessageUtil {
                 return fileName.trim();
             }
         }
-        return null;
+        return filename;
     }
 
     /**
@@ -213,8 +197,9 @@ public class WebMessageUtil {
             Log.i("TAG", "getMime: " + type);
             String[] ty = type.split(";");
             return ty[0];
+        } else {
+            return "application/octet-stream";
         }
-        return "";
     }
 
     /**

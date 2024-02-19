@@ -12,6 +12,8 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -21,9 +23,12 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.Toast;
 
+import com.one.browser.BuildConfig;
 import com.one.browser.R;
 import com.one.browser.adapter.DownloadAdapter;
 import com.one.browser.config.AppConfig;
@@ -51,6 +56,7 @@ public class DownloadActivity extends AppCompatActivity {
     private PopupWindow popupWindow;
     private List<Download> downloadList;
     private DownloadAdapter downloadAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,19 +89,32 @@ public class DownloadActivity extends AppCompatActivity {
                 Log.i("TAG", "获取文件名称  >>>> " + name);
                 Log.i("TAG", "获取文件路径  >>>> " + path);
                 Log.i("TAG", "获取文件类型  >>>> " + mime);
-                File file = new File(AppConfig.PACKAGE, name);
-                Log.i("TAG", "安装全路径: >>> " + file);
-                Uri fileUri;
-                fileUri = FileProvider.getUriForFile(getApplicationContext(), "com.one.browser", file);
+
+
+                File file = new File(path);
+                Uri uri = FileProvider.getUriForFile(getApplicationContext(), BuildConfig.APPLICATION_ID + ".provider", file);
+                // 创建一个Intent来安装APK文件
                 Intent installIntent = new Intent(Intent.ACTION_VIEW);
-                installIntent.setDataAndType(fileUri, mime);
-                installIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                startActivity(installIntent);
+                installIntent.setDataAndType(uri, getMimeType(file.getAbsolutePath()));
+                Log.i("TAG", "文件类型 >>>>>> " + getMimeType(file.getAbsolutePath()));
+                installIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+                // 检查是否有打开该文件的应用
+                PackageManager packageManager = getPackageManager();
+                List<ResolveInfo> activities = packageManager.queryIntentActivities(installIntent, 0);
+                boolean isIntentSafe = activities.size() > 0;
+
+                // 如果有能够处理该Intent的Activity，则启动该Activity
+                if (isIntentSafe) {
+                    startActivity(installIntent);
+                } else {
+                    // 没有找到能够处理该Intent的Activity，显示错误信息或者执行其他操作
+                    Toast.makeText(DownloadActivity.this, "无法打开该文件", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
             public void onItemLongClick(View view, int position) {
-                showPopDialog(view,position);
+                showPopDialog(view, position);
             }
         });
     }
@@ -103,6 +122,7 @@ public class DownloadActivity extends AppCompatActivity {
     private void init() {
         popupWindow = new PopupWindow(this);
     }
+
     private void showPopDialog(View view, int position) {
         // 获取长按事件的位置
         int[] location = new int[2];
@@ -149,7 +169,7 @@ public class DownloadActivity extends AppCompatActivity {
         share.setOnClickListener(view1 -> {
             File file = new File(AppConfig.PACKAGE, downloadList.get(position).getTitle());
             Uri fileUri = FileProvider.getUriForFile(getApplicationContext(), "com.one.browser", file);
-            String type= downloadList.get(position).getMime();
+            String type = downloadList.get(position).getMime();
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.setType(type);
             shareIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
@@ -160,5 +180,15 @@ public class DownloadActivity extends AppCompatActivity {
 
 
     }
+
+    public static String getMimeType(String url) {
+        String type = null;
+        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+        if (extension != null) {
+            type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension.toLowerCase());
+        }
+        return type;
+    }
+
 
 }
